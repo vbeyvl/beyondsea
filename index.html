@@ -9,7 +9,7 @@
 <body>
 <title>BeyondSea</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&display=swap">
 <style>
 /* layout: a navy hero band (title, short film, waterfront drawing), then full-width bands on one column; text near 65 characters */
 :root{
@@ -23,6 +23,8 @@
   --display:Poppins,'Helvetica Neue',Arial,sans-serif;
   --body:Poppins,'Helvetica Neue',Arial,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --tech:'Chakra Petch',Poppins,'Helvetica Neue',Arial,sans-serif;
+  --hero-line:rgba(255,255,255,.22); --hero-panel:rgba(255,255,255,.06); --hero-shadow:rgba(4,8,30,.5); --console-shadow:rgba(33,43,88,.25);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
@@ -54,7 +56,14 @@ p{margin:0;max-width:65ch}
 
 /* the hero band keeps its navy in both themes */
 .hero-band{background:linear-gradient(180deg,var(--hero-bg-2),var(--hero-bg));color:var(--hero-ink);overflow:hidden}
-.hero-band h1{color:var(--hero-ink)}
+.hero-band h1{color:var(--hero-ink);font-family:var(--tech);font-weight:700;font-size:clamp(38px,5.6vw,68px);line-height:1.04;letter-spacing:0}
+.hero-band h1 .w{display:inline-block;white-space:nowrap}
+/* the letters are always visible; a glow runs through them, letter by letter, every ten seconds */
+.hero-band h1 .c{display:inline-block;animation:sweep 10s ease-out infinite;animation-delay:calc(var(--i) * 42ms + 400ms)}
+.hero-band h1 .hl{color:var(--hero-accent)}
+@keyframes sweep{0%,7%,100%{text-shadow:none;transform:none}3%{text-shadow:0 0 22px var(--hero-accent),0 0 3px var(--hero-ink);transform:translateY(-.07em)}}
+.caret{display:inline-block;width:.62em;height:1.05em;background:var(--hero-accent);margin-left:10px;vertical-align:-2px;animation:blink 1.1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
 .hero-band header .wrap{padding-block:20px;display:flex;flex-wrap:wrap;gap:8px 28px;align-items:baseline;justify-content:space-between}
 .mark{font-family:var(--display);font-weight:700;letter-spacing:.14em;font-size:18px}
 .mark::before{content:"";display:inline-block;width:26px;height:4px;background:var(--hero-accent);margin-right:10px;vertical-align:middle}
@@ -62,12 +71,41 @@ nav{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:14.5px}
 nav a{text-decoration:none;color:var(--hero-muted)}
 nav a:hover{color:var(--hero-ink);text-decoration:underline}
 .hero .wrap{padding-block:34px 40px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:44px;align-items:center}
-.hero-text{display:flex;flex-direction:column;gap:20px;min-width:0}
+.hero-text{display:flex;flex-direction:column;gap:20px;min-width:0;position:relative;padding:6px 0 6px 22px;border-left:1px solid var(--hero-line)}
+.hero-text::before,.hero-text::after{content:"";position:absolute;left:-1px;width:14px;height:2px;background:var(--hero-accent)}
+.hero-text::before{top:0}.hero-text::after{bottom:0}
 .hero-band .eyebrow{color:var(--hero-muted)}
-.lede{font-size:19px;color:var(--hero-ink)}
+.lede{font-family:var(--tech);font-weight:400;font-size:19px;line-height:1.55;letter-spacing:.01em;color:var(--hero-muted)}
+.lede b{font-weight:500;color:var(--hero-ink)}
+.lede .u{color:var(--hero-ink);background:linear-gradient(var(--hero-accent),var(--hero-accent)) 0 100%/100% 2px no-repeat;padding-bottom:2px}
+.tags{display:flex;flex-wrap:wrap;gap:8px;list-style:none;padding:0;margin:4px 0 0}
+.tags li{font-family:var(--mono);font-size:11.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--hero-muted);border:1px solid var(--hero-line);padding:5px 10px 5px 9px;display:flex;align-items:center;gap:8px}
+.tags li::before{content:"";width:7px;height:7px;border-radius:50%;border:1.5px solid var(--hero-muted)}
+.tags li.ship::before{background:var(--mark-seen);border-color:var(--mark-seen)}
+.tags li.shore::before{background:var(--mark-hid);border-color:var(--mark-hid)}
+.tags li.ship,.tags li.shore{color:var(--hero-ink)}
 .film{min-width:0;display:flex;flex-direction:column;gap:10px}
 video{display:block;width:100%;max-width:100%;aspect-ratio:16/9;background:var(--screen);border:1px solid var(--line)}
-.hero-band video{border-color:rgba(255,255,255,.28)}
+.feed{position:relative;background:var(--hero-panel);border:1px solid var(--hero-line);border-radius:14px;padding:10px;box-shadow:0 22px 60px var(--hero-shadow)}
+.feed video,.console video{border:0;border-radius:8px}
+.bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-family:var(--mono);font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--hero-muted);padding:2px 4px 10px}
+.bar .dot{width:8px;height:8px;border-radius:50%;background:var(--mark-seen);animation:pulse 1.8s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.25}}
+.bar b{font-weight:500;color:var(--hero-ink)}
+.bar .spd{margin-left:auto;border:1px solid var(--hero-line);border-radius:999px;padding:1px 9px;color:var(--hero-ink)}
+.feed .k{position:absolute;width:16px;height:16px;border:2px solid var(--hero-accent)}
+.feed .k.tl{top:-5px;left:-5px;border-right:0;border-bottom:0;border-top-left-radius:6px}
+.feed .k.tr{top:-5px;right:-5px;border-left:0;border-bottom:0;border-top-right-radius:6px}
+.feed .k.bl{bottom:-5px;left:-5px;border-right:0;border-top:0;border-bottom-left-radius:6px}
+.feed .k.br{bottom:-5px;right:-5px;border-left:0;border-top:0;border-bottom-right-radius:6px}
+.console{background:linear-gradient(180deg,var(--hero-bg-2),var(--hero-bg));border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:12px;box-shadow:0 18px 44px var(--console-shadow)}
+.console .now{padding:2px 4px 0}
+.console .now .letter{color:var(--hero-accent);border-bottom:0;font-family:var(--tech);font-size:24px}
+.console .now .title{color:var(--hero-ink);font-family:var(--tech);font-size:24px}
+.console .readout{color:var(--hero-muted)}
+.backdrop #bd-box.hit{animation:hit .7s steps(2) infinite}
+@keyframes hit{50%{opacity:.25}}
+@media (prefers-reduced-motion: reduce){.hero-band h1 .c,.caret,.bar .dot,.backdrop #bd-box.hit{animation:none}}
 .cap{font-size:13.5px;color:var(--muted);max-width:none}
 .hero-band .cap{color:var(--hero-muted)}
 .hero-band .y{color:var(--mark-hid);font-weight:600}.hero-band .g{color:var(--mark-seen);font-weight:600}
@@ -83,7 +121,7 @@ video{display:block;width:100%;max-width:100%;aspect-ratio:16/9;background:var(-
 .legend li{display:flex;flex-direction:column;gap:10px;min-width:0}
 .legend strong{font-family:var(--display);font-size:18px;font-weight:600;color:var(--fg)}
 .legend span{color:var(--muted);font-size:14.5px}
-.chip{height:92px;background:var(--screen);display:flex;align-items:center;justify-content:center}
+.chip{height:92px;background:var(--screen);display:flex;align-items:center;justify-content:center;border-radius:10px}
 .chip i{display:block;width:92px;height:52px}
 .chip .seen{border:3px solid var(--mark-seen)}
 .chip .hid{border:3px dashed var(--mark-hid)}
@@ -94,13 +132,13 @@ video{display:block;width:100%;max-width:100%;aspect-ratio:16/9;background:var(-
 .now .title{font-family:var(--display);font-weight:600;font-size:24px;color:var(--fg)}
 .readout{font-family:var(--mono);font-size:13.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .picker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-.picker button{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line);padding:12px 12px 10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0;min-height:88px}
+.picker button{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 12px 10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0;min-height:88px}
 .picker button:hover{border-color:var(--fg)}
 .picker button[aria-pressed="true"]{border-color:var(--fg);box-shadow:inset 0 -4px 0 var(--signal)}
 .picker .l{font-family:var(--display);font-weight:700;font-size:21px;line-height:1;color:var(--fg)}
 .picker .t{font-size:13.5px;line-height:1.3}
 .picker .h{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:auto;font-variant-numeric:tabular-nums}
-.dg{overflow-x:auto;border:1px solid var(--line)}
+.dg{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
 .dg svg{display:block;width:100%;min-width:680px;height:auto}
 .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;list-style:none;padding:0;margin:0}
 .steps li{display:flex;flex-direction:column;gap:6px;border-top:3px solid var(--line);padding-top:14px;min-width:0}
@@ -129,13 +167,16 @@ footer strong{color:var(--hero-ink);font-weight:600}
 <header><div class="wrap"><div class="mark">BEYONDSEA</div>
 <nav aria-label="Sections"><a href="#scenarios">Scenarios</a><a href="#read">Reading the picture</a><a href="#next">Flexible perception</a><a href="#questions">Research questions</a></nav></div></header>
 <section class="hero"><div class="wrap">
-<div class="hero-text"><p class="eyebrow">Flexible perception for ships in port</p>
-<h1>Extra eyes for ships in port</h1>
-<p class="lede">A ship in a busy port cannot always see everything around her. BeyondSea studies how sensing from outside the ship can fill in her blind spots, starting with cameras on shore.</p></div>
-<div class="film"><video id="teaser" autoplay muted loop playsinline preload="metadata" poster="media/teaser.jpg" src="media/teaser.mp4" aria-label="Short film: a small craft hidden behind another ship is found by a shore camera, then comes into the ship's own view"></video>
+<div class="hero-text"><p class="eyebrow">Flexible perception for ships in port<span class="caret" aria-hidden="true"></span></p>
+<h1 aria-label="Extra eyes for ships in port"><span class="w hl" aria-hidden="true"><span class="c" style="--i:0">E</span><span class="c" style="--i:1">x</span><span class="c" style="--i:2">t</span><span class="c" style="--i:3">r</span><span class="c" style="--i:4">a</span></span> <span class="w hl" aria-hidden="true"><span class="c" style="--i:6">e</span><span class="c" style="--i:7">y</span><span class="c" style="--i:8">e</span><span class="c" style="--i:9">s</span></span> <span class="w" aria-hidden="true"><span class="c" style="--i:11">f</span><span class="c" style="--i:12">o</span><span class="c" style="--i:13">r</span></span> <span class="w" aria-hidden="true"><span class="c" style="--i:15">s</span><span class="c" style="--i:16">h</span><span class="c" style="--i:17">i</span><span class="c" style="--i:18">p</span><span class="c" style="--i:19">s</span></span> <span class="w" aria-hidden="true"><span class="c" style="--i:21">i</span><span class="c" style="--i:22">n</span></span> <span class="w" aria-hidden="true"><span class="c" style="--i:24">p</span><span class="c" style="--i:25">o</span><span class="c" style="--i:26">r</span><span class="c" style="--i:27">t</span></span></h1>
+<p class="lede">A ship in a busy port cannot always see everything around her. <b>BeyondSea</b> studies how sensing from outside the ship can fill in her <span class="u">blind spots</span>, starting with cameras on shore.</p>
+<ul class="tags" aria-label="Where the sensing comes from"><li class="ship">Ship sensors</li><li class="shore">Shore cameras</li><li>Movable cameras</li><li>Mobile platforms</li></ul></div>
+<div class="film"><div class="feed"><div class="bar"><span class="dot" aria-hidden="true"></span><b>Sim feed</b><span>ship camera + shore detection</span><span class="spd">&times;2</span></div>
+<video id="teaser" autoplay muted loop playsinline preload="metadata" poster="media/teaser.jpg" src="media/teaser.mp4" aria-label="Short film: a small craft hidden behind another ship is found by a shore camera, then comes into the ship's own view"></video>
+<i class="k tl"></i><i class="k tr"></i><i class="k bl"></i><i class="k br"></i></div>
 <p class="cap">Simulation in a virtual Port of Liverpool, twice real speed. <span class="y">Yellow</span>: a craft the shore cameras have found and the ship cannot see. <span class="g">Green</span>: the ship sees it herself.</p></div>
 </div></section>
-<svg class="backdrop" viewBox="0 0 1600 380" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="bd-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="var(--hero-ink)" stroke-opacity=".07" stroke-width="1"/></pattern><linearGradient id="bd-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--hero-ink)" stop-opacity="0"/><stop offset="1" stop-color="var(--hero-ink)" stop-opacity=".10"/></linearGradient></defs><rect width="1600" height="232" fill="url(#bd-grid)"/><rect y="82" width="1600" height="150" fill="url(#bd-fade)"/><g fill="var(--hero-ink)" fill-opacity=".12"><rect x="150" y="180" width="250" height="52"/><rect x="246" y="92" width="62" height="140"/><rect x="246" y="78" width="6" height="14"/><rect x="264" y="78" width="6" height="14"/><rect x="290" y="78" width="6" height="14"/><rect x="302" y="78" width="6" height="14"/><polygon points="436,232 520,232 496,168 460,168"/><rect x="464" y="142" width="28" height="26"/><rect x="465.0" y="124" width="1.6" height="18"/><rect x="468.7" y="124" width="1.6" height="18"/><rect x="472.4" y="124" width="1.6" height="18"/><rect x="476.1" y="124" width="1.6" height="18"/><rect x="479.8" y="124" width="1.6" height="18"/><rect x="483.5" y="124" width="1.6" height="18"/><rect x="487.2" y="124" width="1.6" height="18"/><rect x="490.9" y="124" width="1.6" height="18"/><rect x="1086" y="64" width="7" height="168"/><polygon points="1068,82 1111,82 1105,60 1074,60"/><rect x="1088.5" y="32" width="2" height="28"/><polygon points="1150,232 1150,56 1186,36 1186,232"/><rect x="1200" y="112" width="40" height="120"/><rect x="1252" y="82" width="30" height="150"/><rect x="1294" y="136" width="44" height="96"/><rect x="560" y="188" width="46" height="44"/><rect x="40" y="202" width="80" height="30"/><rect x="1010" y="172" width="50" height="60"/></g><g fill="var(--hero-ink)" fill-opacity=".24"><path d="M70 232 Q150 172 232 232 Z"/><rect x="322" y="202" width="62" height="30"/><rect x="392" y="202" width="62" height="30"/><rect x="462" y="202" width="62" height="30"/><polygon points="548,232 566,198 640,206 656,232"/><rect x="676" y="186" width="112" height="46"/><rect x="676" y="172" width="12" height="14"/><circle cx="682" cy="172" r="6"/><rect x="776" y="172" width="12" height="14"/><circle cx="782" cy="172" r="6"/><rect x="716" y="164" width="32" height="22"/><path d="M714 164 A18 20 0 0 1 750 164 Z"/><rect x="730.5" y="132" width="3" height="12"/><rect x="800" y="180" width="84" height="52"/><rect x="896" y="166" width="150" height="66"/><rect x="914" y="104" width="30" height="62"/><rect x="919" y="86" width="20" height="18"/><path d="M920 86 A9 11 0 0 1 938 86 Z"/><rect x="928.0" y="67" width="2" height="8"/><path d="M923 69 l5 -5 l3 3 l5 -6 l-2 8 l-6 4 Z"/><rect x="1000" y="104" width="30" height="62"/><rect x="1005" y="86" width="20" height="18"/><path d="M1006 86 A9 11 0 0 1 1024 86 Z"/><rect x="1014.0" y="67" width="2" height="8"/><path d="M1009 69 l5 -5 l3 3 l5 -6 l-2 8 l-6 4 Z"/><rect x="1052" y="208" width="30" height="24"/><rect x="1340" y="210" width="90" height="22"/><rect x="1440" y="202" width="60" height="30"/></g><g fill="none" stroke="var(--hero-ink)" stroke-opacity=".34" stroke-width="1.6"><circle cx="929" cy="124" r="7"/><circle cx="1015" cy="124" r="7"/><circle cx="270" cy="188" r="34"/><line x1="236.0" y1="188.0" x2="304.0" y2="188.0"/><line x1="240.6" y1="171.0" x2="299.4" y2="205.0"/><line x1="253.0" y1="158.6" x2="287.0" y2="217.4"/><line x1="270.0" y1="154.0" x2="270.0" y2="222.0"/><line x1="287.0" y1="158.6" x2="253.0" y2="217.4"/><line x1="299.4" y1="171.0" x2="240.6" y2="205.0"/><path d="M258 232 L270 188 L282 232"/><path d="M1470 232 V166 M1492 232 V166 M1426 174 H1504 M1481 140 L1426 174 M1481 140 L1504 174"/><path d="M1481 166 V140"/><path d="M1530 232 V166 M1552 232 V166 M1486 174 H1564 M1541 140 L1486 174 M1541 140 L1564 174"/><path d="M1541 166 V140"/></g><line x1="0" y1="232" x2="1600" y2="232" stroke="var(--hero-ink)" stroke-opacity=".4" stroke-width="1.5"/><line x1="0" y1="246" x2="1600" y2="246" stroke="var(--hero-ink)" stroke-opacity="0.20" stroke-width="1.4" stroke-dasharray="60 26" stroke-dashoffset="738"/><line x1="0" y1="262" x2="1600" y2="262" stroke="var(--hero-ink)" stroke-opacity="0.16" stroke-width="1.4" stroke-dasharray="90 40" stroke-dashoffset="786"/><line x1="0" y1="280" x2="1600" y2="280" stroke="var(--hero-ink)" stroke-opacity="0.13" stroke-width="1.4" stroke-dasharray="130 54" stroke-dashoffset="840"/><line x1="0" y1="298" x2="1600" y2="298" stroke="var(--hero-ink)" stroke-opacity="0.10" stroke-width="1.4" stroke-dasharray="180 70" stroke-dashoffset="894"/><g fill="var(--hero-ink)" fill-opacity=".30"><polygon points="1118,258 1330,258 1352,244 1128,244"/><rect x="1150" y="232" width="150" height="12"/><rect x="1176" y="222" width="84" height="10"/><rect x="1206" y="210" width="16" height="12"/></g><polygon points="1378,266 1402,266 1408,259 1378,259" fill="var(--hero-ink)" fill-opacity=".5"/><rect x="1370" y="248" width="46" height="26" fill="none" stroke="var(--hero-accent)" stroke-width="2" stroke-dasharray="7 5"/><rect x="0" y="312" width="1600" height="68" fill="var(--hero-ink)" fill-opacity=".10"/><line x1="0" y1="312" x2="1600" y2="312" stroke="var(--hero-ink)" stroke-opacity=".55" stroke-width="2"/><path d="M120 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M420 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M900 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M1240 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M1500 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><line x1="0" y1="368" x2="0" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="80" y1="368" x2="80" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="160" y1="368" x2="160" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="240" y1="368" x2="240" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="320" y1="368" x2="320" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="400" y1="368" x2="400" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="480" y1="368" x2="480" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="560" y1="368" x2="560" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="640" y1="368" x2="640" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="720" y1="368" x2="720" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="800" y1="368" x2="800" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="880" y1="368" x2="880" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="960" y1="368" x2="960" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1040" y1="368" x2="1040" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1120" y1="368" x2="1120" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1200" y1="368" x2="1200" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1280" y1="368" x2="1280" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1360" y1="368" x2="1360" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1440" y1="368" x2="1440" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1520" y1="368" x2="1520" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1600" y1="368" x2="1600" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><polygon points="750,195 1370,248 1416,274" fill="var(--hero-accent)" fill-opacity=".07"/><line class="scan" x1="750" y1="195" x2="1392" y2="262" stroke="var(--hero-accent)" stroke-opacity=".85" stroke-width="1.6" stroke-dasharray="4 8"/><polygon points="922,202 1370,248 1416,274" fill="var(--hero-accent)" fill-opacity=".07"/><line class="scan" x1="922" y1="202" x2="1392" y2="262" stroke="var(--hero-accent)" stroke-opacity=".85" stroke-width="1.6" stroke-dasharray="4 8"/><g transform="translate(566 312) scale(1.35) translate(-566 -312)"><g fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><rect x="566" y="228" width="118" height="30" rx="12"/><rect x="672" y="212" width="40" height="28" rx="8"/><rect x="618" y="219" width="26" height="9" rx="3"/><path fill="none" d="M586 256 l-12 28 l14 26"/><line x1="581" y1="310" x2="595" y2="310"/><path fill="none" d="M602 256 l-12 28 l14 26" stroke-opacity=".55"/><line x1="597" y1="310" x2="611" y2="310" stroke-opacity=".55"/><path fill="none" d="M658 256 l-12 28 l14 26"/><line x1="653" y1="310" x2="667" y2="310"/><path fill="none" d="M672 256 l-12 28 l14 26" stroke-opacity=".55"/><line x1="667" y1="310" x2="681" y2="310" stroke-opacity=".55"/></g><rect x="698" y="221" width="9" height="9" rx="2" fill="var(--hero-accent)"/></g><g transform="translate(852 312) scale(1.35) translate(-852 -312)"><g fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><rect x="852" y="256" width="40" height="27" rx="10"/><line x1="878" y1="256" x2="883" y2="242"/><rect x="858" y="220" width="60" height="22" rx="10"/><path fill="none" d="M865 283 l5 14 l-6 13"/><line x1="859" y1="310" x2="877" y2="310"/><path fill="none" d="M880 283 l5 14 l-6 13"/><line x1="874" y1="310" x2="892" y2="310"/></g><circle cx="904" cy="231" r="5" fill="none" stroke="var(--hero-accent)" stroke-width="2.6"/><rect x="916" y="230" width="15" height="7" rx="3" fill="var(--hero-accent)"/></g><text x="972" y="54" fill="var(--hero-ink)" fill-opacity="0.62" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">53.4058° N  2.9958° W</text><text x="970" y="284" fill="var(--hero-ink)" fill-opacity="0.42" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">RIVER MERSEY</text><text x="1392" y="240" fill="var(--hero-ink)" fill-opacity="0.90" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">HIDDEN CRAFT</text><text x="170" y="338" fill="var(--hero-ink)" fill-opacity="0.50" text-anchor="start" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">QUAY</text><path d="M150 26 h-10 M150 26 h10 M150 26 v-10 M150 26 v10" stroke="var(--hero-ink)" stroke-opacity=".5" stroke-width="1.4"/><path d="M1450 26 h-10 M1450 26 h10 M1450 26 v-10 M1450 26 v10" stroke="var(--hero-ink)" stroke-opacity=".5" stroke-width="1.4"/></svg>
+<svg class="backdrop" viewBox="0 0 1600 380" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="bd-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="var(--hero-ink)" stroke-opacity=".07" stroke-width="1"/></pattern><linearGradient id="bd-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--hero-ink)" stop-opacity="0"/><stop offset="1" stop-color="var(--hero-ink)" stop-opacity=".10"/></linearGradient></defs><rect width="1600" height="232" fill="url(#bd-grid)"/><rect y="82" width="1600" height="150" fill="url(#bd-fade)"/><g fill="var(--hero-ink)" fill-opacity=".12"><rect x="150" y="180" width="250" height="52"/><rect x="246" y="92" width="62" height="140"/><rect x="246" y="78" width="6" height="14"/><rect x="264" y="78" width="6" height="14"/><rect x="290" y="78" width="6" height="14"/><rect x="302" y="78" width="6" height="14"/><polygon points="436,232 520,232 496,168 460,168"/><rect x="464" y="142" width="28" height="26"/><rect x="465.0" y="124" width="1.6" height="18"/><rect x="468.7" y="124" width="1.6" height="18"/><rect x="472.4" y="124" width="1.6" height="18"/><rect x="476.1" y="124" width="1.6" height="18"/><rect x="479.8" y="124" width="1.6" height="18"/><rect x="483.5" y="124" width="1.6" height="18"/><rect x="487.2" y="124" width="1.6" height="18"/><rect x="490.9" y="124" width="1.6" height="18"/><rect x="1086" y="64" width="7" height="168"/><polygon points="1068,82 1111,82 1105,60 1074,60"/><rect x="1088.5" y="32" width="2" height="28"/><polygon points="1150,232 1150,56 1186,36 1186,232"/><rect x="1200" y="112" width="40" height="120"/><rect x="1252" y="82" width="30" height="150"/><rect x="1294" y="136" width="44" height="96"/><rect x="560" y="188" width="46" height="44"/><rect x="40" y="202" width="80" height="30"/><rect x="1010" y="172" width="50" height="60"/></g><g fill="var(--hero-ink)" fill-opacity=".24"><path d="M70 232 Q150 172 232 232 Z"/><rect x="322" y="202" width="62" height="30"/><rect x="392" y="202" width="62" height="30"/><rect x="462" y="202" width="62" height="30"/><polygon points="548,232 566,198 640,206 656,232"/><rect x="676" y="186" width="112" height="46"/><rect x="676" y="172" width="12" height="14"/><circle cx="682" cy="172" r="6"/><rect x="776" y="172" width="12" height="14"/><circle cx="782" cy="172" r="6"/><rect x="716" y="164" width="32" height="22"/><path d="M714 164 A18 20 0 0 1 750 164 Z"/><rect x="730.5" y="132" width="3" height="12"/><rect x="800" y="180" width="84" height="52"/><rect x="896" y="166" width="150" height="66"/><rect x="914" y="104" width="30" height="62"/><rect x="919" y="86" width="20" height="18"/><path d="M920 86 A9 11 0 0 1 938 86 Z"/><rect x="928.0" y="67" width="2" height="8"/><path d="M923 69 l5 -5 l3 3 l5 -6 l-2 8 l-6 4 Z"/><rect x="1000" y="104" width="30" height="62"/><rect x="1005" y="86" width="20" height="18"/><path d="M1006 86 A9 11 0 0 1 1024 86 Z"/><rect x="1014.0" y="67" width="2" height="8"/><path d="M1009 69 l5 -5 l3 3 l5 -6 l-2 8 l-6 4 Z"/><rect x="1052" y="208" width="30" height="24"/><rect x="1340" y="210" width="90" height="22"/><rect x="1440" y="202" width="60" height="30"/></g><g fill="none" stroke="var(--hero-ink)" stroke-opacity=".34" stroke-width="1.6"><circle cx="929" cy="124" r="7"/><circle cx="1015" cy="124" r="7"/><circle cx="270" cy="188" r="34"/><line x1="236.0" y1="188.0" x2="304.0" y2="188.0"/><line x1="240.6" y1="171.0" x2="299.4" y2="205.0"/><line x1="253.0" y1="158.6" x2="287.0" y2="217.4"/><line x1="270.0" y1="154.0" x2="270.0" y2="222.0"/><line x1="287.0" y1="158.6" x2="253.0" y2="217.4"/><line x1="299.4" y1="171.0" x2="240.6" y2="205.0"/><path d="M258 232 L270 188 L282 232"/><path d="M1470 232 V166 M1492 232 V166 M1426 174 H1504 M1481 140 L1426 174 M1481 140 L1504 174"/><path d="M1481 166 V140"/><path d="M1530 232 V166 M1552 232 V166 M1486 174 H1564 M1541 140 L1486 174 M1541 140 L1564 174"/><path d="M1541 166 V140"/></g><line x1="0" y1="232" x2="1600" y2="232" stroke="var(--hero-ink)" stroke-opacity=".4" stroke-width="1.5"/><line x1="0" y1="246" x2="1600" y2="246" stroke="var(--hero-ink)" stroke-opacity="0.20" stroke-width="1.4" stroke-dasharray="60 26" stroke-dashoffset="738"/><line x1="0" y1="262" x2="1600" y2="262" stroke="var(--hero-ink)" stroke-opacity="0.16" stroke-width="1.4" stroke-dasharray="90 40" stroke-dashoffset="786"/><line x1="0" y1="280" x2="1600" y2="280" stroke="var(--hero-ink)" stroke-opacity="0.13" stroke-width="1.4" stroke-dasharray="130 54" stroke-dashoffset="840"/><line x1="0" y1="298" x2="1600" y2="298" stroke="var(--hero-ink)" stroke-opacity="0.10" stroke-width="1.4" stroke-dasharray="180 70" stroke-dashoffset="894"/><g fill="var(--hero-ink)" fill-opacity=".30"><polygon points="1118,258 1330,258 1352,244 1128,244"/><rect x="1150" y="232" width="150" height="12"/><rect x="1176" y="222" width="84" height="10"/><rect x="1206" y="210" width="16" height="12"/></g><polygon points="1378,266 1402,266 1408,259 1378,259" fill="var(--hero-ink)" fill-opacity=".5"/><rect id="bd-box" x="1370" y="248" width="46" height="26" fill="none" stroke="var(--hero-accent)" stroke-width="2" stroke-dasharray="7 5"/><rect x="0" y="312" width="1600" height="68" fill="var(--hero-ink)" fill-opacity=".10"/><line x1="0" y1="312" x2="1600" y2="312" stroke="var(--hero-ink)" stroke-opacity=".55" stroke-width="2"/><path d="M120 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M420 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M900 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M1240 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M1500 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><line x1="0" y1="368" x2="0" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="80" y1="368" x2="80" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="160" y1="368" x2="160" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="240" y1="368" x2="240" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="320" y1="368" x2="320" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="400" y1="368" x2="400" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="480" y1="368" x2="480" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="560" y1="368" x2="560" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="640" y1="368" x2="640" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="720" y1="368" x2="720" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="800" y1="368" x2="800" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="880" y1="368" x2="880" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="960" y1="368" x2="960" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1040" y1="368" x2="1040" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1120" y1="368" x2="1120" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1200" y1="368" x2="1200" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1280" y1="368" x2="1280" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1360" y1="368" x2="1360" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1440" y1="368" x2="1440" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1520" y1="368" x2="1520" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1600" y1="368" x2="1600" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><g id="bd-sight" opacity=".3"><polygon id="bd-w0" points="624.0,195.9 1370,248 1416,274" fill="var(--hero-accent)" fill-opacity=".08"/><line id="bd-l0" class="scan" x1="624.0" y1="195.9" x2="1392" y2="262" stroke="var(--hero-accent)" stroke-opacity=".9" stroke-width="1.6" stroke-dasharray="4 8"/><polygon id="bd-w1" points="843.2,202.6 1370,248 1416,274" fill="var(--hero-accent)" fill-opacity=".08"/><line id="bd-l1" class="scan" x1="843.2" y1="202.6" x2="1392" y2="262" stroke="var(--hero-accent)" stroke-opacity=".9" stroke-width="1.6" stroke-dasharray="4 8"/></g><g id="bd-dog" transform="translate(520.0 312) scale(1.35)" fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><polyline id="bd-dog-leg0" fill="none" stroke-opacity=".55" points="-23.0,-56.0 -33.8,-28.0 -23.0,0.0"/><polyline id="bd-dog-leg1" fill="none" stroke-opacity=".55" points="47.0,-56.0 36.2,-28.0 47.0,0.0"/><g id="bd-dog-body"><rect x="-59" y="-84" width="118" height="30" rx="12"/><rect x="47" y="-100" width="40" height="28" rx="8"/><rect x="-7" y="-93" width="26" height="9" rx="3"/><rect x="73" y="-91" width="9" height="9" rx="2" fill="var(--hero-accent)" stroke="none"/></g><polyline id="bd-dog-leg2" fill="none" points="-39.0,-56.0 -49.8,-28.0 -39.0,0.0"/><polyline id="bd-dog-leg3" fill="none" points="33.0,-56.0 22.2,-28.0 33.0,0.0"/></g><g id="bd-duck" transform="translate(800.0 312) scale(1.35)" fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><polyline id="bd-duck-leg0" fill="none" stroke-opacity=".55" points="8.0,-29.0 13.5,-14.5 8.0,0.0"/><line id="bd-duck-foot0" stroke-opacity=".55" x1="2.0" y1="-1.3" x2="20.0" y2="-1.3"/><g id="bd-duck-body"><rect x="-20" y="-56" width="40" height="27" rx="10"/><line x1="6" y1="-56" x2="11" y2="-70"/><g id="bd-duck-head"><rect x="-14" y="-92" width="60" height="22" rx="10"/><circle cx="32" cy="-81" r="5" fill="none" stroke="var(--hero-accent)"/><rect x="44" y="-82" width="15" height="7" rx="3" fill="var(--hero-accent)" stroke="none"/></g></g><polyline id="bd-duck-leg1" fill="none" points="-7.0,-29.0 -1.5,-14.5 -7.0,0.0"/><line id="bd-duck-foot1" x1="-13.0" y1="-1.3" x2="5.0" y2="-1.3"/></g><text x="972" y="54" fill="var(--hero-ink)" fill-opacity="0.62" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">53.4058° N  2.9958° W</text><text x="970" y="284" fill="var(--hero-ink)" fill-opacity="0.42" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">RIVER MERSEY</text><text x="1392" y="240" fill="var(--hero-ink)" fill-opacity="0.90" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">HIDDEN CRAFT</text><text x="170" y="338" fill="var(--hero-ink)" fill-opacity="0.50" text-anchor="start" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">QUAY</text><path d="M150 26 h-10 M150 26 h10 M150 26 v-10 M150 26 v10" stroke="var(--hero-ink)" stroke-opacity=".5" stroke-width="1.4"/><path d="M1450 26 h-10 M1450 26 h10 M1450 26 v-10 M1450 26 v10" stroke="var(--hero-ink)" stroke-opacity=".5" stroke-width="1.4"/></svg>
 </div>
 
 <section class="band-2"><div class="wrap cols">
@@ -148,8 +189,8 @@ footer strong{color:var(--hero-ink);font-weight:600}
 <section id="scenarios"><div class="wrap stack">
 <p class="eyebrow">The demo</p><h2>Ten encounters, seen from the ship</h2>
 <p>Each film is the view from one of the ship&rsquo;s own cameras. What the shore cameras add is drawn on top of it.</p>
-<div class="now"><span class="letter" id="sc-letter">Scenario D</span><span class="title" id="sc-title">Crossing from the quay</span><span class="readout" id="sc-read"></span></div>
-<video id="sc-video" controls playsinline preload="none" poster="media/clip_D.jpg" src="media/clip_D.mp4"></video>
+<div class="console"><div class="now"><span class="letter" id="sc-letter">Scenario D</span><span class="title" id="sc-title">Crossing from the quay</span><span class="readout" id="sc-read"></span></div>
+<video id="sc-video" controls playsinline preload="none" poster="media/clip_D.jpg" src="media/clip_D.mp4"></video></div>
 <div class="picker" role="group" aria-label="Choose a scenario"><button type="button" id="pick-A" aria-pressed="false"><span class="l">A</span><span class="t">Berth gap</span><span class="h">hidden 22 s</span></button><button type="button" id="pick-B" aria-pressed="false"><span class="l">B</span><span class="t">Stopped-ship occlusion</span><span class="h">hidden 70 s</span></button><button type="button" id="pick-C" aria-pressed="false"><span class="l">C</span><span class="t">Stationary craft</span><span class="h">hidden 50 s</span></button><button type="button" id="pick-D" aria-pressed="false"><span class="l">D</span><span class="t">Crossing from the quay</span><span class="h">hidden 10 s</span></button><button type="button" id="pick-E" aria-pressed="false"><span class="l">E</span><span class="t">Two craft</span><span class="h">hidden 31 s</span></button><button type="button" id="pick-F" aria-pressed="false"><span class="l">F</span><span class="t">Head-on, craft pulls out</span><span class="h">hidden 33 s</span></button><button type="button" id="pick-H" aria-pressed="false"><span class="l">H</span><span class="t">Bow crossing from port</span><span class="h">hidden 44 s</span></button><button type="button" id="pick-Hp" aria-pressed="false"><span class="l">H′</span><span class="t">Bow crossing from port, with precursor</span><span class="h">hidden 35 s</span></button><button type="button" id="pick-I" aria-pressed="false"><span class="l">I</span><span class="t">Crossing astern</span><span class="h">hidden 35 s</span></button><button type="button" id="pick-K" aria-pressed="false"><span class="l">K</span><span class="t">Turning-ship occlusion</span><span class="h">hidden 68 s</span></button></div>
 <p class="cap">&ldquo;Hidden&rdquo; is how long, in that film, the shore cameras tracked a craft the ship could not see (simulated seconds, measured from the film).</p>
 </div></section>
@@ -203,6 +244,83 @@ footer strong{color:var(--hero-ink);font-weight:600}
   show(3, false);
   var t = document.getElementById('teaser');
   if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { t.removeAttribute('autoplay'); t.pause(); t.controls = true; }
+})();
+
+(function(){
+  var P = {"K": 1.35, "quay": 312, "craft": [1392, 262], "walk": 154.0, "dog": {"x0": 520.0, "hy": -56.0, "L": 30.0, "kdir": 1, "stride": 18.0, "lift": 8.0, "eye": [77.0, -86.0], "legs": [{"hx": -23.0, "far": true, "ph": 0.5}, {"hx": 47.0, "far": true, "ph": 0.0}, {"hx": -39.0, "far": false, "ph": 0.0}, {"hx": 33.0, "far": false, "ph": 0.5}]}, "duck": {"x0": 800.0, "hy": -29.0, "L": 15.5, "kdir": -1, "stride": 10.0, "lift": 5.0, "eye": [32.0, -81.0], "legs": [{"hx": 8.0, "far": true, "ph": 0.5}, {"hx": -7.0, "far": false, "ph": 0.0}]}}, svg = document.querySelector('svg.backdrop');
+  if (!svg || !window.requestAnimationFrame) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var $ = function(id){ return document.getElementById(id); };
+  var K = P.K, Q = P.quay, C = P.craft, TAU = Math.PI * 2, dog = P.dog, duck = P.duck;
+  var gDog = $('bd-dog'), gDuck = $('bd-duck'), bDog = $('bd-dog-body'), bDuck = $('bd-duck-body'), hDuck = $('bd-duck-head'),
+      sight = $('bd-sight'), box = $('bd-box');
+  function ik(hx, hy, fx, fy, L, kdir){
+    var dx = fx - hx, dy = fy - hy, d = Math.min(Math.sqrt(dx*dx + dy*dy), 2*L - 0.2);
+    var a = Math.atan2(dy, dx) + kdir * Math.acos(d / (2*L));
+    return [hx + L*Math.cos(a), hy + L*Math.sin(a)];
+  }
+  // a foot's place through one step: 60 % of the time on the ground moving back, 40 % lifted and swinging forward
+  function foot(hx, p, S, h, w){
+    p -= Math.floor(p);
+    if (p < 0.6) return [hx + w*S*(0.5 - p/0.6), 0];
+    var u = (p - 0.6)/0.4;
+    return [hx + w*S*(u - 0.5), -w*h*Math.sin(Math.PI*u)];
+  }
+  function ease(u){ u = Math.max(0, Math.min(1, u)); return u*u*(3 - 2*u); }
+  // one loop: walk out, stand and look, walk back (backwards, as such robots can), stand and look
+  var T = 19, W1 = 5.5, S1 = 4.5, W2 = 5.5;
+  function dist(t){
+    if (t < W1) return P.walk * ease(t/W1);
+    if (t < W1 + S1) return P.walk;
+    if (t < W1 + S1 + W2) return P.walk * (1 - ease((t - W1 - S1)/W2));
+    return 0;
+  }
+  function looking(t){
+    var a = W1, b = W1 + S1, c = W1 + S1 + W2;
+    if (t >= a && t < b) return Math.min(1, (t - a)/0.5, (b - t)/0.5);
+    if (t >= c) return Math.min(1, (t - c)/0.5, (T - t)/0.5);
+    return 0;
+  }
+  function f(n){ return n.toFixed(1); }
+  var start = null, visible = true, prev = 0, wk = 0;
+  if ('IntersectionObserver' in window) new IntersectionObserver(function(e){ visible = e[0].isIntersecting; }).observe(svg);
+  function frame(now){
+    requestAnimationFrame(frame);
+    if (!visible) return;
+    if (start === null) start = now;
+    var t = ((now - start)/1000) % T, s = dist(t), q = looking(t);
+    var v = Math.abs(s - prev); prev = s;
+    wk += ((v > 0.02 ? 1 : 0) - wk) * 0.12;                       // 1 while walking, 0 while standing
+    // dog: a trot, diagonal legs together; the feet stay where they land because the step follows the distance walked
+    var pd = (s/K) / (dog.stride/0.6), bob = -1.6*wk*Math.abs(Math.sin(TAU*pd));
+    gDog.setAttribute('transform', 'translate(' + f(dog.x0 + s) + ' ' + Q + ') scale(' + K + ')');
+    bDog.setAttribute('transform', 'translate(0 ' + f(bob + 0.7*(1 - wk)*Math.sin(now/700)) + ')');
+    for (var i = 0; i < dog.legs.length; i++){
+      var L = dog.legs[i], hy = dog.hy + bob, ft = foot(L.hx, pd + L.ph, dog.stride, dog.lift, wk), kn = ik(L.hx, hy, ft[0], ft[1], dog.L, dog.kdir);
+      $('bd-dog-leg' + i).setAttribute('points', f(L.hx) + ',' + f(hy) + ' ' + f(kn[0]) + ',' + f(kn[1]) + ' ' + f(ft[0]) + ',' + f(ft[1]));
+    }
+    // duck: quick short steps, a waddle, and a head that looks about while it stands
+    var pu = (s/K) / (duck.stride/0.6), bobu = -1.2*wk*Math.abs(Math.sin(TAU*pu)), roll = 3.5*wk*Math.sin(TAU*pu), look = q*7*Math.sin(now/520);
+    gDuck.setAttribute('transform', 'translate(' + f(duck.x0 + s) + ' ' + Q + ') scale(' + K + ')');
+    bDuck.setAttribute('transform', 'translate(0 ' + f(bobu) + ') rotate(' + f(roll) + ' 0 ' + duck.hy + ')');
+    hDuck.setAttribute('transform', 'rotate(' + f(look) + ' 11 -70)');
+    for (var j = 0; j < duck.legs.length; j++){
+      var M = duck.legs[j], hyu = duck.hy + bobu, fu = foot(M.hx, pu + M.ph, duck.stride, duck.lift, wk), ku = ik(M.hx, hyu, fu[0], fu[1], duck.L, duck.kdir);
+      $('bd-duck-leg' + j).setAttribute('points', f(M.hx) + ',' + f(hyu) + ' ' + f(ku[0]) + ',' + f(ku[1]) + ' ' + f(fu[0]) + ',' + f(fu[1]));
+      var ff = $('bd-duck-foot' + j);
+      ff.setAttribute('x1', f(fu[0] - 6)); ff.setAttribute('x2', f(fu[0] + 12)); ff.setAttribute('y1', f(fu[1] - 1.3)); ff.setAttribute('y2', f(fu[1] - 1.3));
+    }
+    // sight lines follow the two eyes; they brighten, and the craft's box flashes, while the robots stand and look
+    var eyes = [[dog.x0 + s + K*dog.eye[0], Q + K*(dog.eye[1] + bob)], [duck.x0 + s + K*duck.eye[0], Q + K*(duck.eye[1] + bobu)]];
+    for (var e = 0; e < 2; e++){
+      var ln = $('bd-l' + e), wd = $('bd-w' + e);
+      ln.setAttribute('x1', f(eyes[e][0])); ln.setAttribute('y1', f(eyes[e][1]));
+      wd.setAttribute('points', f(eyes[e][0]) + ',' + f(eyes[e][1]) + ' ' + (C[0] - 22) + ',' + (C[1] - 14) + ' ' + (C[0] + 24) + ',' + (C[1] + 12));
+    }
+    sight.setAttribute('opacity', (0.22 + 0.78*q).toFixed(2));
+    if (box) box.setAttribute('class', q > 0.6 ? 'hit' : '');
+  }
+  requestAnimationFrame(frame);
 })();
 </script>
 
