@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="BeyondSea: flexible perception as extra eyes for ships in port. Simulation films in which shore cameras find small craft hidden from a ship.">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>BeyondSea</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* layout: full-width bands on one column; the film sits high; text columns stay near 65 characters */
+:root{
+  color-scheme: dark;
+  --bg:#07141f; --bg-2:#0b1e2e; --surface:#102a3f; --line:#21405a; --fg:#eef3f7; --muted:#9db2c5;
+  --signal:#ffd600; --signal-ink:#ffd600; --seen:#5ae678; --seen-ink:#5ae678; --screen:#0a1826; --on-screen:#eef3f7;
+  --water:#0e2a40; --land:#22323d; --edge:#5d7387; --hatch:#35526b; --hull:#4f6375; --house:#6f8496; --own:#33485a; --on-hull:#f2f6f9;
+  --mark-seen:#5ae678; --mark-hid:#ffd600; --mark-area:rgba(255,214,0,.34); --mark-win:#eef3f7; --mark-win-fill:#27425a; --mark-bar:#000000;
+  --display:'Barlow Semi Condensed','Helvetica Neue',Arial,sans-serif;
+  --text:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){
+    color-scheme: light;
+    --bg:#f2f5f7; --bg-2:#e6ecf0; --surface:#ffffff; --line:#c9d5de; --fg:#0a2033; --muted:#4d6377;
+    --signal:#e0b000; --signal-ink:#7d5c00; --seen:#1f9a48; --seen-ink:#17773a; --screen:#0a1826; --on-screen:#eef3f7;
+    --water:#cfe1ec; --land:#dfe4e2; --edge:#6c8091; --hatch:#a9bfce; --hull:#6f8293; --house:#93a4b2; --own:#51667a; --on-hull:#ffffff;
+  }
+}
+:root[data-theme="light"]{
+  color-scheme: light;
+  --bg:#f2f5f7; --bg-2:#e6ecf0; --surface:#ffffff; --line:#c9d5de; --fg:#0a2033; --muted:#4d6377;
+  --signal:#e0b000; --signal-ink:#7d5c00; --seen:#1f9a48; --seen-ink:#17773a; --screen:#0a1826; --on-screen:#eef3f7;
+  --water:#cfe1ec; --land:#dfe4e2; --edge:#6c8091; --hatch:#a9bfce; --hull:#6f8293; --house:#93a4b2; --own:#51667a; --on-hull:#ffffff;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--text);font-size:17px;line-height:1.6;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:56px}
+.band-2{background:var(--bg-2)}
+header .wrap{padding-block:18px;display:flex;flex-wrap:wrap;gap:8px 28px;align-items:baseline;justify-content:space-between}
+.mark{font-family:var(--display);font-weight:700;letter-spacing:.14em;font-size:19px}
+.mark::before{content:"";display:inline-block;width:26px;height:4px;background:var(--signal);margin-right:10px;vertical-align:middle}
+nav{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:15px}
+a{color:inherit;text-underline-offset:3px}
+nav a{text-decoration:none;color:var(--muted)}
+nav a:hover{color:var(--fg);text-decoration:underline}
+a:focus-visible,button:focus-visible,video:focus-visible{outline:3px solid var(--signal);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);line-height:1.08;text-wrap:balance;margin:0}
+h1{font-size:clamp(40px,6.4vw,76px);font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(28px,3.6vw,42px);font-weight:600}
+h3{font-size:22px;font-weight:600}
+p{margin:0;max-width:65ch}
+.eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero .wrap{padding-block:36px 56px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;align-items:center}
+.hero-text{display:flex;flex-direction:column;gap:20px;min-width:0}
+.lede{font-size:20px;color:var(--fg)}
+.film{min-width:0;display:flex;flex-direction:column;gap:10px}
+video{display:block;width:100%;max-width:100%;aspect-ratio:16/9;background:var(--screen);border:1px solid var(--line)}
+.cap{font-size:14px;color:var(--muted);max-width:none}
+.y{color:var(--signal-ink);font-weight:600}.g{color:var(--seen-ink);font-weight:600}
+.stack{display:flex;flex-direction:column;gap:22px}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px 48px}
+.cols>*{min-width:0}
+.legend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;list-style:none;padding:0;margin:0}
+.legend li{display:flex;flex-direction:column;gap:10px;min-width:0}
+.legend strong{font-family:var(--display);font-size:20px;font-weight:600}
+.legend span{color:var(--muted);font-size:15px}
+.chip{height:92px;background:var(--screen);display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+.chip i{display:block;width:92px;height:52px}
+.chip .seen{border:3px solid var(--mark-seen)}
+.chip .hid{border:3px dashed var(--mark-hid)}
+.chip .area{border:2px solid var(--mark-hid);background:var(--mark-area);border-radius:50%;width:104px;height:48px}
+.chip .win{border:3px solid var(--mark-win);background:linear-gradient(var(--mark-bar) 0 14px,var(--mark-win-fill) 14px)}
+.now{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline}
+.now .letter{font-family:var(--display);font-weight:700;font-size:30px;color:var(--signal-ink)}
+.now .title{font-family:var(--display);font-weight:600;font-size:26px}
+.readout{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.picker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+.picker button{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);padding:12px 12px 10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0;min-height:86px}
+.picker button:hover{border-color:var(--fg)}
+.picker button[aria-pressed="true"]{border-color:var(--signal);box-shadow:inset 0 -4px 0 var(--signal)}
+.picker .l{font-family:var(--display);font-weight:700;font-size:22px;line-height:1}
+.picker .t{font-size:14px;line-height:1.25}
+.picker .h{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:auto;font-variant-numeric:tabular-nums}
+.dg{overflow-x:auto;border:1px solid var(--line)}
+.dg svg{display:block;width:100%;min-width:680px;height:auto}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;list-style:none;padding:0;margin:0}
+.steps li{display:flex;flex-direction:column;gap:6px;border-top:3px solid var(--line);padding-top:14px;min-width:0}
+.steps li.done{border-top-color:var(--signal)}
+.steps .when{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.steps span{color:var(--muted);font-size:16px}
+.rq{display:flex;flex-direction:column;gap:0;list-style:none;padding:0;margin:0;border-top:1px solid var(--line)}
+.rq li{display:grid;grid-template-columns:170px minmax(0,1fr);gap:8px 24px;padding:18px 0;border-bottom:1px solid var(--line)}
+.rq .k{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:4px}
+.rq .main{font-size:21px}
+footer .wrap{padding-block:28px 40px;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:6px}
+footer p{max-width:none}
+@media (max-width:900px){
+  .hero .wrap{grid-template-columns:minmax(0,1fr);gap:28px}
+  .cols{grid-template-columns:minmax(0,1fr)}
+  .legend{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .picker{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .steps{grid-template-columns:minmax(0,1fr)}
+  .rq li{grid-template-columns:minmax(0,1fr)}
+  .wrap{padding-block:40px}
+}
+</style>
+<header><div class="wrap"><div class="mark">BEYONDSEA</div>
+<nav aria-label="Sections"><a href="#scenarios">Scenarios</a><a href="#read">Reading the picture</a><a href="#next">Flexible perception</a><a href="#questions">Research questions</a></nav></div></header>
+
+<section class="hero"><div class="wrap">
+<div class="hero-text"><p class="eyebrow">Flexible perception for ships in port</p>
+<h1>Extra eyes for ships in port</h1>
+<p class="lede">A ship in a busy port cannot always see everything around her. BeyondSea studies how sensing from outside the ship can fill in her blind spots, starting with cameras on shore.</p></div>
+<div class="film"><video id="teaser" autoplay muted loop playsinline preload="metadata" poster="media/teaser.jpg" src="media/teaser.mp4" aria-label="Short film: a small craft hidden behind another ship is found by a shore camera, then comes into the ship's own view"></video>
+<p class="cap">Simulation in a virtual Port of Liverpool, twice real speed. <span class="y">Yellow</span>: a craft the shore cameras have found and the ship cannot see. <span class="g">Green</span>: the ship sees it herself.</p></div>
+</div></section>
+
+<section class="band-2"><div class="wrap cols">
+<div class="stack"><p class="eyebrow">The problem</p><h2>Blind spots do occur</h2>
+<p>Ships moving through busy ports rely on what their crews and onboard sensors can see, and the intelligent ships of the future will rely on their sensors even more. This is usually enough. But a large vessel or a quay structure can hide a small boat, and the water close to a big ship&rsquo;s own hull is hard to see from on board.</p></div>
+<div class="stack"><p class="eyebrow">The idea</p><h2>Give the ship what she cannot see for herself</h2>
+<p>Flexible perception means supplying a ship with information about the areas she cannot easily observe. Our earlier work, shown on this page, does it with cameras on shore: they detect a boat hidden from the ship and share its position with her.</p></div>
+</div></section>
+
+<section id="scenarios"><div class="wrap stack">
+<p class="eyebrow">The demo</p><h2>Ten encounters, seen from the ship</h2>
+<p>Each film is the view from one of the ship&rsquo;s own cameras. What the shore cameras add is drawn on top of it.</p>
+<div class="now"><span class="letter" id="sc-letter">Scenario D</span><span class="title" id="sc-title">Crossing from the quay</span><span class="readout" id="sc-read"></span></div>
+<video id="sc-video" controls playsinline preload="none" poster="media/clip_D.jpg" src="media/clip_D.mp4"></video>
+<div class="picker" role="group" aria-label="Choose a scenario"><button type="button" id="pick-A" aria-pressed="false"><span class="l">A</span><span class="t">Berth gap</span><span class="h">hidden 22 s</span></button><button type="button" id="pick-B" aria-pressed="false"><span class="l">B</span><span class="t">Stopped-ship occlusion</span><span class="h">hidden 70 s</span></button><button type="button" id="pick-C" aria-pressed="false"><span class="l">C</span><span class="t">Stationary craft</span><span class="h">hidden 50 s</span></button><button type="button" id="pick-D" aria-pressed="false"><span class="l">D</span><span class="t">Crossing from the quay</span><span class="h">hidden 10 s</span></button><button type="button" id="pick-E" aria-pressed="false"><span class="l">E</span><span class="t">Two craft</span><span class="h">hidden 31 s</span></button><button type="button" id="pick-F" aria-pressed="false"><span class="l">F</span><span class="t">Head-on, craft pulls out</span><span class="h">hidden 33 s</span></button><button type="button" id="pick-H" aria-pressed="false"><span class="l">H</span><span class="t">Bow crossing from port</span><span class="h">hidden 44 s</span></button><button type="button" id="pick-Hp" aria-pressed="false"><span class="l">H′</span><span class="t">Bow crossing from port, with precursor</span><span class="h">hidden 35 s</span></button><button type="button" id="pick-I" aria-pressed="false"><span class="l">I</span><span class="t">Crossing astern</span><span class="h">hidden 35 s</span></button><button type="button" id="pick-K" aria-pressed="false"><span class="l">K</span><span class="t">Turning-ship occlusion</span><span class="h">hidden 68 s</span></button></div>
+<p class="cap">&ldquo;Hidden&rdquo; is how long, in that film, the shore cameras tracked a craft the ship could not see (simulated seconds, measured from the film).</p>
+</div></section>
+
+<section class="band-2" id="read"><div class="wrap stack">
+<p class="eyebrow">Reading the picture</p><h2>What the marks mean</h2>
+<ul class="legend">
+<li><div class="chip"><i class="seen"></i></div><strong>Green box</strong><span>A craft the ship detects with her own cameras.</span></li>
+<li><div class="chip"><i class="hid"></i></div><strong>Yellow dashed box</strong><span>A craft detected from shore that the ship cannot see, drawn where it is behind the other ship.</span></li>
+<li><div class="chip"><i class="area"></i></div><strong>Yellow area</strong><span>Where that hidden craft is, with 90&nbsp;% confidence.</span></li>
+<li><div class="chip"><i class="win"></i></div><strong>Small window</strong><span>The shore camera that has the craft in view.</span></li>
+</ul></div></section>
+
+<section id="next"><div class="wrap stack">
+<p class="eyebrow">Where this goes</p><h2>From cameras on shore to flexible perception</h2>
+<p>The demo uses cameras at fixed places on the quay. The project asks how shore cameras, movable cameras and mobile platforms such as robot dogs or wheeled rovers can work with the ship, so that sensing can be brought to wherever a blind spot appears, much as mobile cameras already do in warehouses.</p>
+<div class="dg"><svg viewBox="0 0 900 376" role="img" aria-labelledby="dg-t dg-d" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif" font-size="15"><title id="dg-t">Flexible perception, seen from above</title><desc id="dg-d">A ship cannot see a small craft behind another ship. A fixed camera, a movable camera and a mobile platform on the quay can each see it and tell the ship.</desc><defs><pattern id="dg-h" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><line x1="0" y1="0" x2="0" y2="9" stroke="var(--hatch)" stroke-width="2.2"/></pattern><marker id="dg-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--fg)"/></marker></defs><rect x="0" y="0" width="900" height="376" fill="var(--water)"/><rect x="0" y="0" width="900" height="72" fill="var(--land)"/><line x1="0" y1="72" x2="900" y2="72" stroke="var(--edge)" stroke-width="3"/><polygon points="340.0,150.0 412.9,72.0 900.0,72.0 900.0,94.2 652.0,175.0 606.0,150.0" fill="url(#dg-h)" stroke="none"/><line x1="170.0" y1="332.0" x2="340.0" y2="150.0" stroke="var(--muted)" stroke-width="1.6"/><line x1="340.0" y1="150.0" x2="412.9" y2="72.0" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="3 6"/><line x1="170.0" y1="332.0" x2="652.0" y2="175.0" stroke="var(--muted)" stroke-width="1.6"/><line x1="652.0" y1="175.0" x2="900.0" y2="94.2" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="3 6"/><polygon points="340.0,150.0 606.0,150.0 652.0,175.0 606.0,200.0 340.0,200.0" fill="var(--hull)" stroke="var(--edge)" stroke-width="2"/><rect x="352" y="160" width="44" height="30" fill="var(--house)"/><polygon points="40.0,310.0 214.0,310.0 262.0,332.0 214.0,354.0 40.0,354.0" fill="var(--own)" stroke="var(--edge)" stroke-width="2"/><circle cx="170" cy="332" r="5" fill="var(--fg)"/><line x1="716.0" y1="66.0" x2="566.0" y2="108.0" stroke="var(--signal)" stroke-width="2.4" stroke-dasharray="9 6"/><line x1="476.0" y1="66.0" x2="566.0" y2="108.0" stroke="var(--signal)" stroke-width="2.4" stroke-dasharray="9 6"/><rect x="543" y="93" width="46" height="30" fill="none" stroke="var(--signal)" stroke-width="2.6" stroke-dasharray="8 5"/><polygon points="553.0,103.0 573.0,103.0 580.0,108.0 573.0,113.0 553.0,113.0" fill="var(--fg)"/><rect x="705" y="51" width="22" height="14" rx="2" fill="var(--fg)"/><line x1="716" y1="51" x2="716" y2="32" stroke="var(--fg)" stroke-width="3"/><line x1="402" y1="38" x2="550" y2="38" stroke="var(--fg)" stroke-width="2" marker-start="url(#dg-a)" marker-end="url(#dg-a)"/><rect x="465" y="51" width="22" height="14" rx="2" fill="var(--fg)"/><rect x="219" y="27" width="34" height="18" rx="5" fill="var(--fg)"/><circle cx="226" cy="46" r="5" fill="var(--land)" stroke="var(--fg)" stroke-width="2"/><circle cx="246" cy="46" r="5" fill="var(--land)" stroke="var(--fg)" stroke-width="2"/><line x1="262" y1="36" x2="322" y2="36" stroke="var(--fg)" stroke-width="2" marker-end="url(#dg-a)"/><text x="236" y="20" fill="var(--fg)" text-anchor="middle" font-weight="600">Mobile platform</text><text x="476" y="28" fill="var(--fg)" text-anchor="middle" font-weight="600">Movable camera</text><text x="734" y="44" fill="var(--fg)" text-anchor="start" font-weight="600">Camera on shore</text><text x="18" y="62" fill="var(--muted)" text-anchor="start" font-weight="600">QUAY</text><text x="498" y="181" fill="var(--on-hull)" text-anchor="middle" font-weight="600">Another ship</text><text x="138" y="337" fill="var(--on-hull)" text-anchor="end" font-weight="600">The ship</text><text x="598" y="113" fill="var(--signal-ink)" text-anchor="start" font-weight="600">Hidden craft</text><text x="770" y="128" fill="var(--fg)" text-anchor="middle" font-weight="600">Blind spot</text><text x="250" y="252" fill="var(--muted)" text-anchor="start" font-weight="400">The ship’s line of sight</text></svg></div>
+<ol class="steps">
+<li class="done"><span class="when">Shown in the demo</span><h3>Cameras on shore</h3><span>Detect a craft hidden from the ship and share its position.</span></li>
+<li><span class="when">Next</span><h3>Movable cameras</h3><span>Change where they look from as ships arrive, leave and turn.</span></li>
+<li><span class="when">Next</span><h3>Mobile platforms</h3><span>Robot dogs or wheeled rovers that go to where the view is blocked.</span></li>
+</ol></div></section>
+
+<section class="band-2" id="questions"><div class="wrap stack">
+<p class="eyebrow">Research questions</p><h2>What the project asks</h2>
+<ul class="rq">
+<li><span class="k">Main question</span><p class="main">When a ship&rsquo;s own perception of its surroundings is incomplete, how can flexible perception best supply the information it is missing?</p></li>
+<li><span class="k">Sub-question 1</span><p>How should cameras on shore, movable cameras and mobile platforms cooperate with a ship&rsquo;s own sensors, so that sensing is available wherever a blind spot appears?</p></li>
+<li><span class="k">Sub-question 2</span><p>What kind of extra information helps a ship most, and where should movable sensors be placed, or moved, to provide it?</p></li>
+<li><span class="k">Sub-question 3</span><p>How can methods developed in a virtual port be transferred to real hardware in a physical model port (sim-to-real), and what has to change for them to keep working?</p></li>
+</ul>
+<p>Students will use the virtual port and a small physical model port to explore how these sources of information can cooperate, which information helps a ship most, and how methods developed in simulation transfer to real hardware.</p>
+</div></section>
+<section class="band-2" id="film"><div class="wrap stack"><p class="eyebrow">The whole film</p><h2>All ten scenarios, start to finish</h2><video id="full-video" controls playsinline preload="none" poster="media/teaser.jpg" src="video/BeyondSea_demo_720p_web.mp4"></video><p class="cap">720p, twice real speed, with a title card before each scenario.</p></div></section>
+<footer><div class="wrap"><p>All footage on this page is simulation in a virtual model of the Port of Liverpool, played at twice real speed.</p><p>BeyondSea: Flexible Perception as Extra Eyes for Ships in Port.</p></div></footer>
+<script>
+(function(){
+  var S = [{"letter": "A", "slug": "A", "title": "Berth gap", "hidden": 22}, {"letter": "B", "slug": "B", "title": "Stopped-ship occlusion", "hidden": 70}, {"letter": "C", "slug": "C", "title": "Stationary craft", "hidden": 50}, {"letter": "D", "slug": "D", "title": "Crossing from the quay", "hidden": 10}, {"letter": "E", "slug": "E", "title": "Two craft", "hidden": 31}, {"letter": "F", "slug": "F", "title": "Head-on, craft pulls out", "hidden": 33}, {"letter": "H", "slug": "H", "title": "Bow crossing from port", "hidden": 44}, {"letter": "H′", "slug": "Hp", "title": "Bow crossing from port, with precursor", "hidden": 35}, {"letter": "I", "slug": "I", "title": "Crossing astern", "hidden": 35}, {"letter": "K", "slug": "K", "title": "Turning-ship occlusion", "hidden": 68}];
+  var v = document.getElementById('sc-video'), letter = document.getElementById('sc-letter'), title = document.getElementById('sc-title'),
+      read = document.getElementById('sc-read'), btns = document.querySelectorAll('.picker button');
+  function show(i, play){
+    var s = S[i];
+    letter.textContent = 'Scenario ' + s.letter; title.textContent = s.title;
+    read.textContent = 'tracked from shore while hidden from the ship: ' + s.hidden + ' s of the encounter';
+    v.poster = 'media/clip_' + s.slug + '.jpg';
+    v.src = 'media/clip_' + s.slug + '.mp4';
+    for (var k = 0; k < btns.length; k++) btns[k].setAttribute('aria-pressed', k === i ? 'true' : 'false');
+    if (play) { var p = v.play(); if (p && p.catch) p.catch(function(){}); }
+  }
+  for (var k = 0; k < btns.length; k++) (function(k){ btns[k].addEventListener('click', function(){ show(k, true); }); })(k);
+  show(3, false);
+  var t = document.getElementById('teaser');
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) { t.removeAttribute('autoplay'); t.pause(); t.controls = true; }
+})();
+</script>
+
+</body>
+</html>
