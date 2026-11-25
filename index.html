@@ -4,86 +4,101 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="BeyondSea: flexible perception as extra eyes for ships in port. Simulation films in which shore cameras find small craft hidden from a ship.">
-<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
 <body>
 <title>BeyondSea</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Poppins:wght@400;500;600;700&display=swap">
 <style>
-/* layout: full-width bands on one column; the film sits high; text columns stay near 65 characters */
+/* layout: a navy hero band (title, short film, waterfront drawing), then full-width bands on one column; text near 65 characters */
 :root{
-  color-scheme: dark;
-  --bg:#07141f; --bg-2:#0b1e2e; --surface:#102a3f; --line:#21405a; --fg:#eef3f7; --muted:#9db2c5;
-  --signal:#ffd600; --signal-ink:#ffd600; --seen:#5ae678; --seen-ink:#5ae678; --screen:#0a1826; --on-screen:#eef3f7;
-  --water:#0e2a40; --land:#22323d; --edge:#5d7387; --hatch:#35526b; --hull:#4f6375; --house:#6f8496; --own:#33485a; --on-hull:#f2f6f9;
-  --mark-seen:#5ae678; --mark-hid:#ffd600; --mark-area:rgba(255,214,0,.34); --mark-win:#eef3f7; --mark-win-fill:#27425a; --mark-bar:#000000;
-  --display:'Barlow Semi Condensed','Helvetica Neue',Arial,sans-serif;
-  --text:'IBM Plex Sans','Helvetica Neue',Arial,sans-serif;
+  color-scheme: light;
+  --bg:#ffffff; --bg-2:#f6f6f4; --surface:#ffffff; --line:#dbdbd3; --fg:#212b58; --text:#333f47; --muted:#5b6670;
+  --signal:#ffd100; --signal-ink:#6f5a00; --signal-line:#b89500; --seen-ink:#17773a;
+  --water:#dde6f0; --land:#ededea; --edge:#6b7391; --hatch:#b3bdd6; --hull:#6e779a; --house:#9aa1bd; --own:#212b58; --on-hull:#ffffff;
+  --hero-bg:#212b58; --hero-bg-2:#171e45; --hero-ink:#ffffff; --hero-muted:#c5cae0; --hero-accent:#ffd100;
+  --screen:#0a1226; --on-screen:#eef3f7;
+  --mark-seen:#5ae678; --mark-hid:#ffd100; --mark-area:rgba(255,209,0,.34); --mark-win:#eef3f7; --mark-win-fill:#2f3c78; --mark-bar:#000000;
+  --display:Poppins,'Helvetica Neue',Arial,sans-serif;
+  --body:Poppins,'Helvetica Neue',Arial,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
 }
-@media (prefers-color-scheme: light){
-  :root:not([data-theme="dark"]){
-    color-scheme: light;
-    --bg:#f2f5f7; --bg-2:#e6ecf0; --surface:#ffffff; --line:#c9d5de; --fg:#0a2033; --muted:#4d6377;
-    --signal:#e0b000; --signal-ink:#7d5c00; --seen:#1f9a48; --seen-ink:#17773a; --screen:#0a1826; --on-screen:#eef3f7;
-    --water:#cfe1ec; --land:#dfe4e2; --edge:#6c8091; --hatch:#a9bfce; --hull:#6f8293; --house:#93a4b2; --own:#51667a; --on-hull:#ffffff;
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#12183a; --bg-2:#181f47; --surface:#212b58; --line:#3a4580; --fg:#ffffff; --text:#dfe3f2; --muted:#aab1cf;
+  --signal:#ffd100; --signal-ink:#ffd100; --signal-line:#ffd100; --seen-ink:#5ae678;
+  --water:#1b2552; --land:#262f5e; --edge:#8a93bd; --hatch:#3a4580; --hull:#5a659a; --house:#7f89b8; --own:#3f4a87; --on-hull:#ffffff;
   }
 }
-:root[data-theme="light"]{
-  color-scheme: light;
-  --bg:#f2f5f7; --bg-2:#e6ecf0; --surface:#ffffff; --line:#c9d5de; --fg:#0a2033; --muted:#4d6377;
-  --signal:#e0b000; --signal-ink:#7d5c00; --seen:#1f9a48; --seen-ink:#17773a; --screen:#0a1826; --on-screen:#eef3f7;
-  --water:#cfe1ec; --land:#dfe4e2; --edge:#6c8091; --hatch:#a9bfce; --hull:#6f8293; --house:#93a4b2; --own:#51667a; --on-hull:#ffffff;
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#12183a; --bg-2:#181f47; --surface:#212b58; --line:#3a4580; --fg:#ffffff; --text:#dfe3f2; --muted:#aab1cf;
+  --signal:#ffd100; --signal-ink:#ffd100; --signal-line:#ffd100; --seen-ink:#5ae678;
+  --water:#1b2552; --land:#262f5e; --edge:#8a93bd; --hatch:#3a4580; --hull:#5a659a; --house:#7f89b8; --own:#3f4a87; --on-hull:#ffffff;
 }
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--fg);font-family:var(--text);font-size:17px;line-height:1.6;margin:0}
-.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:56px}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16.5px;line-height:1.65;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:60px}
 .band-2{background:var(--bg-2)}
-header .wrap{padding-block:18px;display:flex;flex-wrap:wrap;gap:8px 28px;align-items:baseline;justify-content:space-between}
-.mark{font-family:var(--display);font-weight:700;letter-spacing:.14em;font-size:19px}
-.mark::before{content:"";display:inline-block;width:26px;height:4px;background:var(--signal);margin-right:10px;vertical-align:middle}
-nav{display:flex;flex-wrap:wrap;gap:6px 22px;font-size:15px}
 a{color:inherit;text-underline-offset:3px}
-nav a{text-decoration:none;color:var(--muted)}
-nav a:hover{color:var(--fg);text-decoration:underline}
 a:focus-visible,button:focus-visible,video:focus-visible{outline:3px solid var(--signal);outline-offset:3px}
-h1,h2,h3{font-family:var(--display);line-height:1.08;text-wrap:balance;margin:0}
-h1{font-size:clamp(40px,6.4vw,76px);font-weight:700;letter-spacing:-.01em}
-h2{font-size:clamp(28px,3.6vw,42px);font-weight:600}
-h3{font-size:22px;font-weight:600}
+h1,h2,h3{font-family:var(--display);line-height:1.12;text-wrap:balance;margin:0;color:var(--fg)}
+h1{font-size:clamp(36px,5.4vw,64px);font-weight:700;letter-spacing:-.015em}
+h2{font-size:clamp(26px,3.2vw,38px);font-weight:600;letter-spacing:-.01em}
+h3{font-size:20px;font-weight:600}
 p{margin:0;max-width:65ch}
-.eyebrow{font-family:var(--mono);font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.hero .wrap{padding-block:36px 56px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:40px;align-items:center}
+.eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.eyebrow::before{content:"";display:inline-block;width:18px;height:2px;background:var(--signal);margin-right:10px;vertical-align:middle}
+
+/* the hero band keeps its navy in both themes */
+.hero-band{background:linear-gradient(180deg,var(--hero-bg-2),var(--hero-bg));color:var(--hero-ink);overflow:hidden}
+.hero-band h1{color:var(--hero-ink)}
+.hero-band header .wrap{padding-block:20px;display:flex;flex-wrap:wrap;gap:8px 28px;align-items:baseline;justify-content:space-between}
+.mark{font-family:var(--display);font-weight:700;letter-spacing:.14em;font-size:18px}
+.mark::before{content:"";display:inline-block;width:26px;height:4px;background:var(--hero-accent);margin-right:10px;vertical-align:middle}
+nav{display:flex;flex-wrap:wrap;gap:6px 24px;font-size:14.5px}
+nav a{text-decoration:none;color:var(--hero-muted)}
+nav a:hover{color:var(--hero-ink);text-decoration:underline}
+.hero .wrap{padding-block:34px 40px;display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:44px;align-items:center}
 .hero-text{display:flex;flex-direction:column;gap:20px;min-width:0}
-.lede{font-size:20px;color:var(--fg)}
+.hero-band .eyebrow{color:var(--hero-muted)}
+.lede{font-size:19px;color:var(--hero-ink)}
 .film{min-width:0;display:flex;flex-direction:column;gap:10px}
 video{display:block;width:100%;max-width:100%;aspect-ratio:16/9;background:var(--screen);border:1px solid var(--line)}
-.cap{font-size:14px;color:var(--muted);max-width:none}
-.y{color:var(--signal-ink);font-weight:600}.g{color:var(--seen-ink);font-weight:600}
+.hero-band video{border-color:rgba(255,255,255,.28)}
+.cap{font-size:13.5px;color:var(--muted);max-width:none}
+.hero-band .cap{color:var(--hero-muted)}
+.hero-band .y{color:var(--mark-hid);font-weight:600}.hero-band .g{color:var(--mark-seen);font-weight:600}
+.backdrop{display:block;width:100%;height:clamp(190px,25vw,360px)}
+.backdrop .scan{animation:scan 2.6s linear infinite}
+@keyframes scan{to{stroke-dashoffset:-48}}
+@media (prefers-reduced-motion: reduce){.backdrop .scan{animation:none}}
+
 .stack{display:flex;flex-direction:column;gap:22px}
-.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px 48px}
+.cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px 52px}
 .cols>*{min-width:0}
 .legend{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px;list-style:none;padding:0;margin:0}
 .legend li{display:flex;flex-direction:column;gap:10px;min-width:0}
-.legend strong{font-family:var(--display);font-size:20px;font-weight:600}
-.legend span{color:var(--muted);font-size:15px}
-.chip{height:92px;background:var(--screen);display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+.legend strong{font-family:var(--display);font-size:18px;font-weight:600;color:var(--fg)}
+.legend span{color:var(--muted);font-size:14.5px}
+.chip{height:92px;background:var(--screen);display:flex;align-items:center;justify-content:center}
 .chip i{display:block;width:92px;height:52px}
 .chip .seen{border:3px solid var(--mark-seen)}
 .chip .hid{border:3px dashed var(--mark-hid)}
 .chip .area{border:2px solid var(--mark-hid);background:var(--mark-area);border-radius:50%;width:104px;height:48px}
 .chip .win{border:3px solid var(--mark-win);background:linear-gradient(var(--mark-bar) 0 14px,var(--mark-win-fill) 14px)}
 .now{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:baseline}
-.now .letter{font-family:var(--display);font-weight:700;font-size:30px;color:var(--signal-ink)}
-.now .title{font-family:var(--display);font-weight:600;font-size:26px}
-.readout{font-family:var(--mono);font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums}
+.now .letter{font-family:var(--display);font-weight:700;font-size:26px;color:var(--fg);border-bottom:4px solid var(--signal);line-height:1.25}
+.now .title{font-family:var(--display);font-weight:600;font-size:24px;color:var(--fg)}
+.readout{font-family:var(--mono);font-size:13.5px;color:var(--muted);font-variant-numeric:tabular-nums}
 .picker{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
-.picker button{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);padding:12px 12px 10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0;min-height:86px}
+.picker button{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line);padding:12px 12px 10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0;min-height:88px}
 .picker button:hover{border-color:var(--fg)}
-.picker button[aria-pressed="true"]{border-color:var(--signal);box-shadow:inset 0 -4px 0 var(--signal)}
-.picker .l{font-family:var(--display);font-weight:700;font-size:22px;line-height:1}
-.picker .t{font-size:14px;line-height:1.25}
+.picker button[aria-pressed="true"]{border-color:var(--fg);box-shadow:inset 0 -4px 0 var(--signal)}
+.picker .l{font-family:var(--display);font-weight:700;font-size:21px;line-height:1;color:var(--fg)}
+.picker .t{font-size:13.5px;line-height:1.3}
 .picker .h{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:auto;font-variant-numeric:tabular-nums}
 .dg{overflow-x:auto;border:1px solid var(--line)}
 .dg svg{display:block;width:100%;min-width:680px;height:auto}
@@ -91,13 +106,15 @@ video{display:block;width:100%;max-width:100%;aspect-ratio:16/9;background:var(-
 .steps li{display:flex;flex-direction:column;gap:6px;border-top:3px solid var(--line);padding-top:14px;min-width:0}
 .steps li.done{border-top-color:var(--signal)}
 .steps .when{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.steps span{color:var(--muted);font-size:16px}
+.steps span{color:var(--muted);font-size:15.5px}
 .rq{display:flex;flex-direction:column;gap:0;list-style:none;padding:0;margin:0;border-top:1px solid var(--line)}
 .rq li{display:grid;grid-template-columns:170px minmax(0,1fr);gap:8px 24px;padding:18px 0;border-bottom:1px solid var(--line)}
-.rq .k{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:4px}
-.rq .main{font-size:21px}
-footer .wrap{padding-block:28px 40px;color:var(--muted);font-size:14px;display:flex;flex-direction:column;gap:6px}
+.rq .k{font-family:var(--mono);font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:5px}
+.rq .main{font-size:20px;color:var(--fg);font-weight:500}
+footer{background:var(--hero-bg);color:var(--hero-muted)}
+footer .wrap{padding-block:30px 40px;font-size:13.5px;display:flex;flex-direction:column;gap:6px}
 footer p{max-width:none}
+footer strong{color:var(--hero-ink);font-weight:600}
 @media (max-width:900px){
   .hero .wrap{grid-template-columns:minmax(0,1fr);gap:28px}
   .cols{grid-template-columns:minmax(0,1fr)}
@@ -105,12 +122,12 @@ footer p{max-width:none}
   .picker{grid-template-columns:repeat(2,minmax(0,1fr))}
   .steps{grid-template-columns:minmax(0,1fr)}
   .rq li{grid-template-columns:minmax(0,1fr)}
-  .wrap{padding-block:40px}
+  .wrap{padding-block:42px}
 }
 </style>
+<div class="hero-band">
 <header><div class="wrap"><div class="mark">BEYONDSEA</div>
 <nav aria-label="Sections"><a href="#scenarios">Scenarios</a><a href="#read">Reading the picture</a><a href="#next">Flexible perception</a><a href="#questions">Research questions</a></nav></div></header>
-
 <section class="hero"><div class="wrap">
 <div class="hero-text"><p class="eyebrow">Flexible perception for ships in port</p>
 <h1>Extra eyes for ships in port</h1>
@@ -118,6 +135,8 @@ footer p{max-width:none}
 <div class="film"><video id="teaser" autoplay muted loop playsinline preload="metadata" poster="media/teaser.jpg" src="media/teaser.mp4" aria-label="Short film: a small craft hidden behind another ship is found by a shore camera, then comes into the ship's own view"></video>
 <p class="cap">Simulation in a virtual Port of Liverpool, twice real speed. <span class="y">Yellow</span>: a craft the shore cameras have found and the ship cannot see. <span class="g">Green</span>: the ship sees it herself.</p></div>
 </div></section>
+<svg class="backdrop" viewBox="0 0 1600 380" preserveAspectRatio="xMidYMax slice" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg"><defs><pattern id="bd-grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="var(--hero-ink)" stroke-opacity=".07" stroke-width="1"/></pattern><linearGradient id="bd-fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--hero-ink)" stop-opacity="0"/><stop offset="1" stop-color="var(--hero-ink)" stop-opacity=".10"/></linearGradient></defs><rect width="1600" height="232" fill="url(#bd-grid)"/><rect y="82" width="1600" height="150" fill="url(#bd-fade)"/><g fill="var(--hero-ink)" fill-opacity=".12"><rect x="150" y="180" width="250" height="52"/><rect x="246" y="92" width="62" height="140"/><rect x="246" y="78" width="6" height="14"/><rect x="264" y="78" width="6" height="14"/><rect x="290" y="78" width="6" height="14"/><rect x="302" y="78" width="6" height="14"/><polygon points="436,232 520,232 496,168 460,168"/><rect x="464" y="142" width="28" height="26"/><rect x="465.0" y="124" width="1.6" height="18"/><rect x="468.7" y="124" width="1.6" height="18"/><rect x="472.4" y="124" width="1.6" height="18"/><rect x="476.1" y="124" width="1.6" height="18"/><rect x="479.8" y="124" width="1.6" height="18"/><rect x="483.5" y="124" width="1.6" height="18"/><rect x="487.2" y="124" width="1.6" height="18"/><rect x="490.9" y="124" width="1.6" height="18"/><rect x="1086" y="64" width="7" height="168"/><polygon points="1068,82 1111,82 1105,60 1074,60"/><rect x="1088.5" y="32" width="2" height="28"/><polygon points="1150,232 1150,56 1186,36 1186,232"/><rect x="1200" y="112" width="40" height="120"/><rect x="1252" y="82" width="30" height="150"/><rect x="1294" y="136" width="44" height="96"/><rect x="560" y="188" width="46" height="44"/><rect x="40" y="202" width="80" height="30"/><rect x="1010" y="172" width="50" height="60"/></g><g fill="var(--hero-ink)" fill-opacity=".24"><path d="M70 232 Q150 172 232 232 Z"/><rect x="322" y="202" width="62" height="30"/><rect x="392" y="202" width="62" height="30"/><rect x="462" y="202" width="62" height="30"/><polygon points="548,232 566,198 640,206 656,232"/><rect x="676" y="186" width="112" height="46"/><rect x="676" y="172" width="12" height="14"/><circle cx="682" cy="172" r="6"/><rect x="776" y="172" width="12" height="14"/><circle cx="782" cy="172" r="6"/><rect x="716" y="164" width="32" height="22"/><path d="M714 164 A18 20 0 0 1 750 164 Z"/><rect x="730.5" y="132" width="3" height="12"/><rect x="800" y="180" width="84" height="52"/><rect x="896" y="166" width="150" height="66"/><rect x="914" y="104" width="30" height="62"/><rect x="919" y="86" width="20" height="18"/><path d="M920 86 A9 11 0 0 1 938 86 Z"/><rect x="928.0" y="67" width="2" height="8"/><path d="M923 69 l5 -5 l3 3 l5 -6 l-2 8 l-6 4 Z"/><rect x="1000" y="104" width="30" height="62"/><rect x="1005" y="86" width="20" height="18"/><path d="M1006 86 A9 11 0 0 1 1024 86 Z"/><rect x="1014.0" y="67" width="2" height="8"/><path d="M1009 69 l5 -5 l3 3 l5 -6 l-2 8 l-6 4 Z"/><rect x="1052" y="208" width="30" height="24"/><rect x="1340" y="210" width="90" height="22"/><rect x="1440" y="202" width="60" height="30"/></g><g fill="none" stroke="var(--hero-ink)" stroke-opacity=".34" stroke-width="1.6"><circle cx="929" cy="124" r="7"/><circle cx="1015" cy="124" r="7"/><circle cx="270" cy="188" r="34"/><line x1="236.0" y1="188.0" x2="304.0" y2="188.0"/><line x1="240.6" y1="171.0" x2="299.4" y2="205.0"/><line x1="253.0" y1="158.6" x2="287.0" y2="217.4"/><line x1="270.0" y1="154.0" x2="270.0" y2="222.0"/><line x1="287.0" y1="158.6" x2="253.0" y2="217.4"/><line x1="299.4" y1="171.0" x2="240.6" y2="205.0"/><path d="M258 232 L270 188 L282 232"/><path d="M1470 232 V166 M1492 232 V166 M1426 174 H1504 M1481 140 L1426 174 M1481 140 L1504 174"/><path d="M1481 166 V140"/><path d="M1530 232 V166 M1552 232 V166 M1486 174 H1564 M1541 140 L1486 174 M1541 140 L1564 174"/><path d="M1541 166 V140"/></g><line x1="0" y1="232" x2="1600" y2="232" stroke="var(--hero-ink)" stroke-opacity=".4" stroke-width="1.5"/><line x1="0" y1="246" x2="1600" y2="246" stroke="var(--hero-ink)" stroke-opacity="0.20" stroke-width="1.4" stroke-dasharray="60 26" stroke-dashoffset="738"/><line x1="0" y1="262" x2="1600" y2="262" stroke="var(--hero-ink)" stroke-opacity="0.16" stroke-width="1.4" stroke-dasharray="90 40" stroke-dashoffset="786"/><line x1="0" y1="280" x2="1600" y2="280" stroke="var(--hero-ink)" stroke-opacity="0.13" stroke-width="1.4" stroke-dasharray="130 54" stroke-dashoffset="840"/><line x1="0" y1="298" x2="1600" y2="298" stroke="var(--hero-ink)" stroke-opacity="0.10" stroke-width="1.4" stroke-dasharray="180 70" stroke-dashoffset="894"/><g fill="var(--hero-ink)" fill-opacity=".30"><polygon points="1118,258 1330,258 1352,244 1128,244"/><rect x="1150" y="232" width="150" height="12"/><rect x="1176" y="222" width="84" height="10"/><rect x="1206" y="210" width="16" height="12"/></g><polygon points="1378,266 1402,266 1408,259 1378,259" fill="var(--hero-ink)" fill-opacity=".5"/><rect x="1370" y="248" width="46" height="26" fill="none" stroke="var(--hero-accent)" stroke-width="2" stroke-dasharray="7 5"/><rect x="0" y="312" width="1600" height="68" fill="var(--hero-ink)" fill-opacity=".10"/><line x1="0" y1="312" x2="1600" y2="312" stroke="var(--hero-ink)" stroke-opacity=".55" stroke-width="2"/><path d="M120 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M420 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M900 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M1240 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><path d="M1500 312 v-9 h-3 v-4 h14 v4 h-3 v9 Z" fill="var(--hero-ink)" fill-opacity=".45"/><line x1="0" y1="368" x2="0" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="80" y1="368" x2="80" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="160" y1="368" x2="160" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="240" y1="368" x2="240" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="320" y1="368" x2="320" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="400" y1="368" x2="400" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="480" y1="368" x2="480" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="560" y1="368" x2="560" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="640" y1="368" x2="640" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="720" y1="368" x2="720" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="800" y1="368" x2="800" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="880" y1="368" x2="880" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="960" y1="368" x2="960" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1040" y1="368" x2="1040" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1120" y1="368" x2="1120" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1200" y1="368" x2="1200" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1280" y1="368" x2="1280" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1360" y1="368" x2="1360" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1440" y1="368" x2="1440" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1520" y1="368" x2="1520" y2="360" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><line x1="1600" y1="368" x2="1600" y2="352" stroke="var(--hero-ink)" stroke-opacity=".3" stroke-width="1"/><polygon points="750,195 1370,248 1416,274" fill="var(--hero-accent)" fill-opacity=".07"/><line class="scan" x1="750" y1="195" x2="1392" y2="262" stroke="var(--hero-accent)" stroke-opacity=".85" stroke-width="1.6" stroke-dasharray="4 8"/><polygon points="922,202 1370,248 1416,274" fill="var(--hero-accent)" fill-opacity=".07"/><line class="scan" x1="922" y1="202" x2="1392" y2="262" stroke="var(--hero-accent)" stroke-opacity=".85" stroke-width="1.6" stroke-dasharray="4 8"/><g transform="translate(566 312) scale(1.35) translate(-566 -312)"><g fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><rect x="566" y="228" width="118" height="30" rx="12"/><rect x="672" y="212" width="40" height="28" rx="8"/><rect x="618" y="219" width="26" height="9" rx="3"/><path fill="none" d="M586 256 l-12 28 l14 26"/><line x1="581" y1="310" x2="595" y2="310"/><path fill="none" d="M602 256 l-12 28 l14 26" stroke-opacity=".55"/><line x1="597" y1="310" x2="611" y2="310" stroke-opacity=".55"/><path fill="none" d="M658 256 l-12 28 l14 26"/><line x1="653" y1="310" x2="667" y2="310"/><path fill="none" d="M672 256 l-12 28 l14 26" stroke-opacity=".55"/><line x1="667" y1="310" x2="681" y2="310" stroke-opacity=".55"/></g><rect x="698" y="221" width="9" height="9" rx="2" fill="var(--hero-accent)"/></g><g transform="translate(852 312) scale(1.35) translate(-852 -312)"><g fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><rect x="852" y="256" width="40" height="27" rx="10"/><line x1="878" y1="256" x2="883" y2="242"/><rect x="858" y="220" width="60" height="22" rx="10"/><path fill="none" d="M865 283 l5 14 l-6 13"/><line x1="859" y1="310" x2="877" y2="310"/><path fill="none" d="M880 283 l5 14 l-6 13"/><line x1="874" y1="310" x2="892" y2="310"/></g><circle cx="904" cy="231" r="5" fill="none" stroke="var(--hero-accent)" stroke-width="2.6"/><rect x="916" y="230" width="15" height="7" rx="3" fill="var(--hero-accent)"/></g><text x="972" y="54" fill="var(--hero-ink)" fill-opacity="0.62" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">53.4058° N  2.9958° W</text><text x="970" y="284" fill="var(--hero-ink)" fill-opacity="0.42" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">RIVER MERSEY</text><text x="1392" y="240" fill="var(--hero-ink)" fill-opacity="0.90" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">HIDDEN CRAFT</text><text x="170" y="338" fill="var(--hero-ink)" fill-opacity="0.50" text-anchor="start" font-family="'IBM Plex Mono',ui-monospace,Menlo,monospace" font-size="12.5" letter-spacing="1.6">QUAY</text><path d="M150 26 h-10 M150 26 h10 M150 26 v-10 M150 26 v10" stroke="var(--hero-ink)" stroke-opacity=".5" stroke-width="1.4"/><path d="M1450 26 h-10 M1450 26 h10 M1450 26 v-10 M1450 26 v10" stroke="var(--hero-ink)" stroke-opacity=".5" stroke-width="1.4"/></svg>
+</div>
 
 <section class="band-2"><div class="wrap cols">
 <div class="stack"><p class="eyebrow">The problem</p><h2>Blind spots do occur</h2>
@@ -147,7 +166,7 @@ footer p{max-width:none}
 <section id="next"><div class="wrap stack">
 <p class="eyebrow">Where this goes</p><h2>From cameras on shore to flexible perception</h2>
 <p>The demo uses cameras at fixed places on the quay. The project asks how shore cameras, movable cameras and mobile platforms such as robot dogs or wheeled rovers can work with the ship, so that sensing can be brought to wherever a blind spot appears, much as mobile cameras already do in warehouses.</p>
-<div class="dg"><svg viewBox="0 0 900 376" role="img" aria-labelledby="dg-t dg-d" xmlns="http://www.w3.org/2000/svg" font-family="'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif" font-size="15"><title id="dg-t">Flexible perception, seen from above</title><desc id="dg-d">A ship cannot see a small craft behind another ship. A fixed camera, a movable camera and a mobile platform on the quay can each see it and tell the ship.</desc><defs><pattern id="dg-h" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><line x1="0" y1="0" x2="0" y2="9" stroke="var(--hatch)" stroke-width="2.2"/></pattern><marker id="dg-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--fg)"/></marker></defs><rect x="0" y="0" width="900" height="376" fill="var(--water)"/><rect x="0" y="0" width="900" height="72" fill="var(--land)"/><line x1="0" y1="72" x2="900" y2="72" stroke="var(--edge)" stroke-width="3"/><polygon points="340.0,150.0 412.9,72.0 900.0,72.0 900.0,94.2 652.0,175.0 606.0,150.0" fill="url(#dg-h)" stroke="none"/><line x1="170.0" y1="332.0" x2="340.0" y2="150.0" stroke="var(--muted)" stroke-width="1.6"/><line x1="340.0" y1="150.0" x2="412.9" y2="72.0" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="3 6"/><line x1="170.0" y1="332.0" x2="652.0" y2="175.0" stroke="var(--muted)" stroke-width="1.6"/><line x1="652.0" y1="175.0" x2="900.0" y2="94.2" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="3 6"/><polygon points="340.0,150.0 606.0,150.0 652.0,175.0 606.0,200.0 340.0,200.0" fill="var(--hull)" stroke="var(--edge)" stroke-width="2"/><rect x="352" y="160" width="44" height="30" fill="var(--house)"/><polygon points="40.0,310.0 214.0,310.0 262.0,332.0 214.0,354.0 40.0,354.0" fill="var(--own)" stroke="var(--edge)" stroke-width="2"/><circle cx="170" cy="332" r="5" fill="var(--fg)"/><line x1="716.0" y1="66.0" x2="566.0" y2="108.0" stroke="var(--signal)" stroke-width="2.4" stroke-dasharray="9 6"/><line x1="476.0" y1="66.0" x2="566.0" y2="108.0" stroke="var(--signal)" stroke-width="2.4" stroke-dasharray="9 6"/><rect x="543" y="93" width="46" height="30" fill="none" stroke="var(--signal)" stroke-width="2.6" stroke-dasharray="8 5"/><polygon points="553.0,103.0 573.0,103.0 580.0,108.0 573.0,113.0 553.0,113.0" fill="var(--fg)"/><rect x="705" y="51" width="22" height="14" rx="2" fill="var(--fg)"/><line x1="716" y1="51" x2="716" y2="32" stroke="var(--fg)" stroke-width="3"/><line x1="402" y1="38" x2="550" y2="38" stroke="var(--fg)" stroke-width="2" marker-start="url(#dg-a)" marker-end="url(#dg-a)"/><rect x="465" y="51" width="22" height="14" rx="2" fill="var(--fg)"/><rect x="219" y="27" width="34" height="18" rx="5" fill="var(--fg)"/><circle cx="226" cy="46" r="5" fill="var(--land)" stroke="var(--fg)" stroke-width="2"/><circle cx="246" cy="46" r="5" fill="var(--land)" stroke="var(--fg)" stroke-width="2"/><line x1="262" y1="36" x2="322" y2="36" stroke="var(--fg)" stroke-width="2" marker-end="url(#dg-a)"/><text x="236" y="20" fill="var(--fg)" text-anchor="middle" font-weight="600">Mobile platform</text><text x="476" y="28" fill="var(--fg)" text-anchor="middle" font-weight="600">Movable camera</text><text x="734" y="44" fill="var(--fg)" text-anchor="start" font-weight="600">Camera on shore</text><text x="18" y="62" fill="var(--muted)" text-anchor="start" font-weight="600">QUAY</text><text x="498" y="181" fill="var(--on-hull)" text-anchor="middle" font-weight="600">Another ship</text><text x="138" y="337" fill="var(--on-hull)" text-anchor="end" font-weight="600">The ship</text><text x="598" y="113" fill="var(--signal-ink)" text-anchor="start" font-weight="600">Hidden craft</text><text x="770" y="128" fill="var(--fg)" text-anchor="middle" font-weight="600">Blind spot</text><text x="250" y="252" fill="var(--muted)" text-anchor="start" font-weight="400">The ship’s line of sight</text></svg></div>
+<div class="dg"><svg viewBox="0 0 900 376" role="img" aria-labelledby="dg-t dg-d" xmlns="http://www.w3.org/2000/svg" font-family="Poppins, 'Helvetica Neue', Arial, sans-serif" font-size="15"><title id="dg-t">Flexible perception, seen from above</title><desc id="dg-d">A ship cannot see a small craft behind another ship. A fixed camera, a movable camera and a mobile platform on the quay can each see it and tell the ship.</desc><defs><pattern id="dg-h" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(40)"><line x1="0" y1="0" x2="0" y2="9" stroke="var(--hatch)" stroke-width="2.2"/></pattern><marker id="dg-a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="var(--fg)"/></marker></defs><rect x="0" y="0" width="900" height="376" fill="var(--water)"/><rect x="0" y="0" width="900" height="72" fill="var(--land)"/><line x1="0" y1="72" x2="900" y2="72" stroke="var(--edge)" stroke-width="3"/><polygon points="340.0,150.0 412.9,72.0 900.0,72.0 900.0,94.2 652.0,175.0 606.0,150.0" fill="url(#dg-h)" stroke="none"/><line x1="170.0" y1="332.0" x2="340.0" y2="150.0" stroke="var(--muted)" stroke-width="1.6"/><line x1="340.0" y1="150.0" x2="412.9" y2="72.0" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="3 6"/><line x1="170.0" y1="332.0" x2="652.0" y2="175.0" stroke="var(--muted)" stroke-width="1.6"/><line x1="652.0" y1="175.0" x2="900.0" y2="94.2" stroke="var(--muted)" stroke-width="1.6" stroke-dasharray="3 6"/><polygon points="340.0,150.0 606.0,150.0 652.0,175.0 606.0,200.0 340.0,200.0" fill="var(--hull)" stroke="var(--edge)" stroke-width="2"/><rect x="352" y="160" width="44" height="30" fill="var(--house)"/><polygon points="40.0,310.0 214.0,310.0 262.0,332.0 214.0,354.0 40.0,354.0" fill="var(--own)" stroke="var(--edge)" stroke-width="2"/><circle cx="170" cy="332" r="5" fill="var(--fg)"/><line x1="716.0" y1="66.0" x2="566.0" y2="108.0" stroke="var(--signal-line)" stroke-width="2.4" stroke-dasharray="9 6"/><line x1="476.0" y1="66.0" x2="566.0" y2="108.0" stroke="var(--signal-line)" stroke-width="2.4" stroke-dasharray="9 6"/><rect x="543" y="93" width="46" height="30" fill="none" stroke="var(--signal-line)" stroke-width="2.6" stroke-dasharray="8 5"/><polygon points="553.0,103.0 573.0,103.0 580.0,108.0 573.0,113.0 553.0,113.0" fill="var(--fg)"/><rect x="705" y="51" width="22" height="14" rx="2" fill="var(--fg)"/><line x1="716" y1="51" x2="716" y2="32" stroke="var(--fg)" stroke-width="3"/><line x1="402" y1="38" x2="550" y2="38" stroke="var(--fg)" stroke-width="2" marker-start="url(#dg-a)" marker-end="url(#dg-a)"/><rect x="465" y="51" width="22" height="14" rx="2" fill="var(--fg)"/><rect x="219" y="27" width="34" height="18" rx="5" fill="var(--fg)"/><circle cx="226" cy="46" r="5" fill="var(--land)" stroke="var(--fg)" stroke-width="2"/><circle cx="246" cy="46" r="5" fill="var(--land)" stroke="var(--fg)" stroke-width="2"/><line x1="262" y1="36" x2="322" y2="36" stroke="var(--fg)" stroke-width="2" marker-end="url(#dg-a)"/><text x="236" y="20" fill="var(--fg)" text-anchor="middle" font-weight="600">Mobile platform</text><text x="476" y="28" fill="var(--fg)" text-anchor="middle" font-weight="600">Movable camera</text><text x="734" y="44" fill="var(--fg)" text-anchor="start" font-weight="600">Camera on shore</text><text x="18" y="62" fill="var(--muted)" text-anchor="start" font-weight="600">QUAY</text><text x="498" y="181" fill="var(--on-hull)" text-anchor="middle" font-weight="600">Another ship</text><text x="138" y="337" fill="var(--on-hull)" text-anchor="end" font-weight="600">The ship</text><text x="598" y="113" fill="var(--signal-ink)" text-anchor="start" font-weight="600">Hidden craft</text><text x="770" y="128" fill="var(--fg)" text-anchor="middle" font-weight="600">Blind spot</text><text x="250" y="252" fill="var(--muted)" text-anchor="start" font-weight="400">The ship’s line of sight</text></svg></div>
 <ol class="steps">
 <li class="done"><span class="when">Shown in the demo</span><h3>Cameras on shore</h3><span>Detect a craft hidden from the ship and share its position.</span></li>
 <li><span class="when">Next</span><h3>Movable cameras</h3><span>Change where they look from as ships arrive, leave and turn.</span></li>
@@ -164,8 +183,8 @@ footer p{max-width:none}
 </ul>
 <p>Students will use the virtual port and a small physical model port to explore how these sources of information can cooperate, which information helps a ship most, and how methods developed in simulation transfer to real hardware.</p>
 </div></section>
-<section class="band-2" id="film"><div class="wrap stack"><p class="eyebrow">The whole film</p><h2>All ten scenarios, start to finish</h2><video id="full-video" controls playsinline preload="none" poster="media/teaser.jpg" src="video/BeyondSea_demo_720p_web.mp4"></video><p class="cap">720p, twice real speed, with a title card before each scenario.</p></div></section>
-<footer><div class="wrap"><p>All footage on this page is simulation in a virtual model of the Port of Liverpool, played at twice real speed.</p><p>BeyondSea: Flexible Perception as Extra Eyes for Ships in Port.</p></div></footer>
+
+<footer><div class="wrap"><p><strong>BeyondSea</strong> &middot; Flexible Perception as Extra Eyes for Ships in Port</p><p>All footage on this page is simulation in a virtual model of the Port of Liverpool, played at twice real speed. The waterfront drawing is an illustration.</p></div></footer>
 <script>
 (function(){
   var S = [{"letter": "A", "slug": "A", "title": "Berth gap", "hidden": 22}, {"letter": "B", "slug": "B", "title": "Stopped-ship occlusion", "hidden": 70}, {"letter": "C", "slug": "C", "title": "Stationary craft", "hidden": 50}, {"letter": "D", "slug": "D", "title": "Crossing from the quay", "hidden": 10}, {"letter": "E", "slug": "E", "title": "Two craft", "hidden": 31}, {"letter": "F", "slug": "F", "title": "Head-on, craft pulls out", "hidden": 33}, {"letter": "H", "slug": "H", "title": "Bow crossing from port", "hidden": 44}, {"letter": "H′", "slug": "Hp", "title": "Bow crossing from port, with precursor", "hidden": 35}, {"letter": "I", "slug": "I", "title": "Crossing astern", "hidden": 35}, {"letter": "K", "slug": "K", "title": "Turning-ship occlusion", "hidden": 68}];

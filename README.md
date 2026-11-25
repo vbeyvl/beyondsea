@@ -13,4 +13,3 @@ All footage is simulation in a virtual model of the Port of Liverpool, played at
 
 - `index.html` – the page
 - `media/` – one clip per scenario and a short teaser (1280x720)
-- `video/` – the whole film (720p)
