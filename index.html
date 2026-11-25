@@ -14,7 +14,7 @@
 /* layout: a navy hero band (title, short film, waterfront drawing), then full-width bands on one column; text near 65 characters */
 :root{
   color-scheme: light;
-  --bg:#ffffff; --bg-2:#f6f6f4; --surface:#ffffff; --line:#dbdbd3; --fg:#212b58; --text:#333f47; --muted:#5b6670;
+  --bg:#ffffff; --bg-2:#eef1f9; --surface:#ffffff; --line:#d3d9ea; --card-shadow:rgba(33,43,88,.09); --fg:#212b58; --text:#333f47; --muted:#5b6670;
   --signal:#ffd100; --signal-ink:#6f5a00; --signal-line:#b89500; --seen-ink:#17773a;
   --water:#dde6f0; --land:#ededea; --edge:#6b7391; --hatch:#b3bdd6; --hull:#6e779a; --house:#9aa1bd; --own:#212b58; --on-hull:#ffffff;
   --hero-bg:#212b58; --hero-bg-2:#171e45; --hero-ink:#ffffff; --hero-muted:#c5cae0; --hero-accent:#ffd100;
@@ -24,19 +24,20 @@
   --body:Poppins,'Helvetica Neue',Arial,sans-serif;
   --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
   --tech:'Chakra Petch',Poppins,'Helvetica Neue',Arial,sans-serif;
+  --on-signal:#212b58; --hero-grid:rgba(255,255,255,.055);
   --hero-line:rgba(255,255,255,.22); --hero-panel:rgba(255,255,255,.06); --hero-shadow:rgba(4,8,30,.5); --console-shadow:rgba(33,43,88,.25);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     color-scheme: dark;
-    --bg:#12183a; --bg-2:#181f47; --surface:#212b58; --line:#3a4580; --fg:#ffffff; --text:#dfe3f2; --muted:#aab1cf;
+    --bg:#12183a; --bg-2:#181f47; --surface:#212b58; --line:#3a4580; --card-shadow:rgba(0,0,0,.28); --fg:#ffffff; --text:#dfe3f2; --muted:#aab1cf;
   --signal:#ffd100; --signal-ink:#ffd100; --signal-line:#ffd100; --seen-ink:#5ae678;
   --water:#1b2552; --land:#262f5e; --edge:#8a93bd; --hatch:#3a4580; --hull:#5a659a; --house:#7f89b8; --own:#3f4a87; --on-hull:#ffffff;
   }
 }
 :root[data-theme="dark"]{
   color-scheme: dark;
-  --bg:#12183a; --bg-2:#181f47; --surface:#212b58; --line:#3a4580; --fg:#ffffff; --text:#dfe3f2; --muted:#aab1cf;
+  --bg:#12183a; --bg-2:#181f47; --surface:#212b58; --line:#3a4580; --card-shadow:rgba(0,0,0,.28); --fg:#ffffff; --text:#dfe3f2; --muted:#aab1cf;
   --signal:#ffd100; --signal-ink:#ffd100; --signal-line:#ffd100; --seen-ink:#5ae678;
   --water:#1b2552; --land:#262f5e; --edge:#8a93bd; --hatch:#3a4580; --hull:#5a659a; --house:#7f89b8; --own:#3f4a87; --on-hull:#ffffff;
 }
@@ -46,10 +47,10 @@ body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16
 .band-2{background:var(--bg-2)}
 a{color:inherit;text-underline-offset:3px}
 a:focus-visible,button:focus-visible,video:focus-visible{outline:3px solid var(--signal);outline-offset:3px}
-h1,h2,h3{font-family:var(--display);line-height:1.12;text-wrap:balance;margin:0;color:var(--fg)}
+h1,h2,h3{font-family:var(--tech);line-height:1.12;text-wrap:balance;margin:0;color:var(--fg)}
 h1{font-size:clamp(36px,5.4vw,64px);font-weight:700;letter-spacing:-.015em}
-h2{font-size:clamp(26px,3.2vw,38px);font-weight:600;letter-spacing:-.01em}
-h3{font-size:20px;font-weight:600}
+h2{font-size:clamp(28px,3.4vw,42px);font-weight:700;letter-spacing:0}
+h3{font-size:21px;font-weight:600}
 p{margin:0;max-width:65ch}
 .eyebrow{font-family:var(--mono);font-size:12.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
 .eyebrow::before{content:"";display:inline-block;width:18px;height:2px;background:var(--signal);margin-right:10px;vertical-align:middle}
@@ -153,7 +154,38 @@ footer{background:var(--hero-bg);color:var(--hero-muted)}
 footer .wrap{padding-block:30px 40px;font-size:13.5px;display:flex;flex-direction:column;gap:6px}
 footer p{max-width:none}
 footer strong{color:var(--hero-ink);font-weight:600}
+/* lower sections: cards, a navy hardware band, coloured question cards */
+.cols>.stack{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--signal);border-radius:14px;padding:26px 26px 28px;box-shadow:0 12px 30px var(--card-shadow)}
+.picker button[aria-pressed="true"]{background:var(--hero-bg);border-color:var(--hero-bg);box-shadow:inset 0 -4px 0 var(--signal)}
+.picker button[aria-pressed="true"] .l,.picker button[aria-pressed="true"] .t{color:var(--hero-ink)}
+.picker button[aria-pressed="true"] .h{color:var(--hero-muted)}
+.steps li{background:var(--surface);border:1px solid var(--line);border-top:4px solid var(--line);border-radius:12px;padding:16px 18px 18px}
+.steps li.done{border-top-color:var(--signal)}
+.hw{background:linear-gradient(var(--hero-grid) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(90deg,var(--hero-grid) 1px,transparent 1px) 0 0/40px 40px,linear-gradient(180deg,var(--hero-bg),var(--hero-bg-2));color:var(--hero-muted)}
+.hw h2,.hw h3{color:var(--hero-ink)}
+.hw .eyebrow{color:var(--hero-muted)}
+.hw .lead{color:var(--hero-ink);font-size:18px}
+.hw-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;list-style:none;padding:0;margin:0}
+.hw-card{background:var(--hero-panel);border:1px solid var(--hero-line);border-radius:14px;padding:14px 16px 18px;display:flex;flex-direction:column;gap:8px;min-width:0;transition:border-color .2s,transform .2s}
+.hw-card:hover{border-color:var(--hero-accent);transform:translateY(-3px)}
+.hw-pic{border-radius:10px;background:var(--hero-bg-2);border:1px solid var(--hero-line)}
+.hw-pic svg{display:block;width:100%;height:auto}
+.hw-tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--hero-muted);margin-top:6px}
+.hw-card.live .hw-tag{color:var(--hero-accent)}
+.hw-card p{font-size:14.5px;color:var(--hero-muted)}
+.rq-main{background:linear-gradient(135deg,var(--hero-bg-2),var(--hero-bg));border-left:6px solid var(--hero-accent);border-radius:16px;padding:26px 30px 30px;display:flex;flex-direction:column;gap:12px;box-shadow:0 16px 40px var(--console-shadow)}
+.rq-main .k{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--hero-muted)}
+.rq-main p{font-family:var(--tech);font-weight:600;font-size:clamp(20px,2.5vw,28px);line-height:1.3;color:var(--hero-ink);max-width:none}
+.rq-subs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;list-style:none;padding:0;margin:0}
+.rq-subs li{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 20px 22px;display:flex;flex-direction:column;gap:10px;min-width:0;box-shadow:0 10px 26px var(--card-shadow)}
+.rq-subs .n{font-family:var(--tech);font-weight:700;font-size:16px;color:var(--on-signal);background:var(--signal);width:32px;height:32px;border-radius:50%;display:grid;place-items:center}
+.rq-subs p{font-size:15.5px}
+.todo{border-left:4px solid var(--signal);padding:4px 0 4px 18px;display:flex;flex-direction:column;gap:6px}
+.todo .k{font-family:var(--mono);font-size:12.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+@media (prefers-reduced-motion: reduce){.hw-card{transition:none}.hw-card:hover{transform:none}}
 @media (max-width:900px){
+  .hw-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rq-subs{grid-template-columns:minmax(0,1fr)}
   .hero .wrap{grid-template-columns:minmax(0,1fr);gap:28px}
   .cols{grid-template-columns:minmax(0,1fr)}
   .legend{grid-template-columns:repeat(2,minmax(0,1fr))}
@@ -162,10 +194,13 @@ footer strong{color:var(--hero-ink);font-weight:600}
   .rq li{grid-template-columns:minmax(0,1fr)}
   .wrap{padding-block:42px}
 }
+@media (max-width:520px){
+  .hw-grid{grid-template-columns:minmax(0,1fr)}
+}
 </style>
 <div class="hero-band">
 <header><div class="wrap"><div class="mark">BEYONDSEA</div>
-<nav aria-label="Sections"><a href="#scenarios">Scenarios</a><a href="#read">Reading the picture</a><a href="#next">Flexible perception</a><a href="#questions">Research questions</a></nav></div></header>
+<nav aria-label="Sections"><a href="#scenarios">Scenarios</a><a href="#read">Reading the picture</a><a href="#next">Flexible perception</a><a href="#hardware">Hardware</a><a href="#questions">Research questions</a></nav></div></header>
 <section class="hero"><div class="wrap">
 <div class="hero-text"><p class="eyebrow">Flexible perception for ships in port<span class="caret" aria-hidden="true"></span></p>
 <h1 aria-label="Extra eyes for ships in port"><span class="w hl" aria-hidden="true"><span class="c" style="--i:0">E</span><span class="c" style="--i:1">x</span><span class="c" style="--i:2">t</span><span class="c" style="--i:3">r</span><span class="c" style="--i:4">a</span></span> <span class="w hl" aria-hidden="true"><span class="c" style="--i:6">e</span><span class="c" style="--i:7">y</span><span class="c" style="--i:8">e</span><span class="c" style="--i:9">s</span></span> <span class="w" aria-hidden="true"><span class="c" style="--i:11">f</span><span class="c" style="--i:12">o</span><span class="c" style="--i:13">r</span></span> <span class="w" aria-hidden="true"><span class="c" style="--i:15">s</span><span class="c" style="--i:16">h</span><span class="c" style="--i:17">i</span><span class="c" style="--i:18">p</span><span class="c" style="--i:19">s</span></span> <span class="w" aria-hidden="true"><span class="c" style="--i:21">i</span><span class="c" style="--i:22">n</span></span> <span class="w" aria-hidden="true"><span class="c" style="--i:24">p</span><span class="c" style="--i:25">o</span><span class="c" style="--i:26">r</span><span class="c" style="--i:27">t</span></span></h1>
@@ -214,15 +249,21 @@ footer strong{color:var(--hero-ink);font-weight:600}
 <li><span class="when">Next</span><h3>Mobile platforms</h3><span>Robot dogs or wheeled rovers that go to where the view is blocked.</span></li>
 </ol></div></section>
 
+<section class="hw" id="hardware"><div class="wrap stack">
+<p class="eyebrow">Hardware</p><h2>Sensing you can place, move and carry</h2>
+<p class="lead">BeyondSea is a hands-on project. The ideas are tried on real hardware: cameras and small mobile robots working around model ships in a physical model of a port.</p>
+<ul class="hw-grid"><li class="hw-card live"><div class="hw-pic"><svg viewBox="0 0 220 130" role="img" aria-label="Camera on a mast" xmlns="http://www.w3.org/2000/svg"><line x1="14" y1="108" x2="206" y2="108" stroke="var(--hero-ink)" stroke-opacity=".45" stroke-width="1.6"/><polygon points="102,31 196,62 196,94" fill="var(--hero-accent)" fill-opacity=".12"/><line x1="102" y1="31" x2="196" y2="78" stroke="var(--hero-accent)" stroke-width="1.6" stroke-dasharray="4 7"/><g fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><line x1="70" y1="108" x2="70" y2="34"/><rect x="58" y="22" width="34" height="18" rx="4"/><rect x="92" y="27" width="8" height="8" rx="2" fill="var(--hero-accent)" stroke="none"/></g></svg></div><span class="hw-tag">In the demo</span><h3>Camera on shore</h3><p>A fixed viewpoint on the quay. This is what the demo films use.</p></li><li class="hw-card"><div class="hw-pic"><svg viewBox="0 0 220 130" role="img" aria-label="Camera on a rail" xmlns="http://www.w3.org/2000/svg"><line x1="14" y1="108" x2="206" y2="108" stroke="var(--hero-ink)" stroke-opacity=".45" stroke-width="1.6"/><g fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><line x1="26" y1="70" x2="194" y2="70"/><line x1="34" y1="70" x2="34" y2="108"/><line x1="186" y1="70" x2="186" y2="108"/><rect x="92" y="50" width="36" height="18" rx="4"/><circle cx="101" cy="72" r="4"/><circle cx="119" cy="72" r="4"/><rect x="128" y="55" width="8" height="8" rx="2" fill="var(--hero-accent)" stroke="none"/></g><path d="M70 38 H52 m0 0 l7 -5 m-7 5 l7 5 M150 38 H168 m0 0 l-7 -5 m7 5 l-7 5" fill="none" stroke="var(--hero-ink)" stroke-width="2" stroke-linecap="round"/></svg></div><span class="hw-tag">Next step</span><h3>Movable camera</h3><p>A camera that can change where it looks from as ships arrive, leave and turn.</p></li><li class="hw-card"><div class="hw-pic"><svg viewBox="0 0 220 130" role="img" aria-label="Robot dog" xmlns="http://www.w3.org/2000/svg"><line x1="14" y1="108" x2="206" y2="108" stroke="var(--hero-ink)" stroke-opacity=".45" stroke-width="1.6"/><g transform="translate(96 108) scale(.98)" fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><g stroke-opacity=".55"><polyline fill="none" points="-23.0,-56.0 -33.8,-28.0 -23.0,0.0"/><polyline fill="none" points="47.0,-56.0 36.2,-28.0 47.0,0.0"/></g><rect x="-59" y="-84" width="118" height="30" rx="12"/><rect x="47" y="-100" width="40" height="28" rx="8"/><rect x="-7" y="-93" width="26" height="9" rx="3"/><rect x="73" y="-91" width="9" height="9" rx="2" fill="var(--hero-accent)" stroke="none"/><polyline fill="none" points="-39.0,-56.0 -49.8,-28.0 -39.0,0.0"/><polyline fill="none" points="33.0,-56.0 22.2,-28.0 33.0,0.0"/></g></svg></div><span class="hw-tag">Mobile platform</span><h3>Robot dog</h3><p>A four-legged platform that carries a camera to where the view is blocked.</p></li><li class="hw-card"><div class="hw-pic"><svg viewBox="0 0 220 130" role="img" aria-label="Wheeled rover" xmlns="http://www.w3.org/2000/svg"><line x1="14" y1="108" x2="206" y2="108" stroke="var(--hero-ink)" stroke-opacity=".45" stroke-width="1.6"/><g fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><rect x="50" y="68" width="112" height="24" rx="9"/><line x1="124" y1="68" x2="124" y2="40"/><rect x="108" y="24" width="34" height="18" rx="4"/><rect x="142" y="29" width="8" height="8" rx="2" fill="var(--hero-accent)" stroke="none"/><circle cx="74" cy="94" r="13"/><circle cx="138" cy="94" r="13"/><circle cx="74" cy="94" r="3"/><circle cx="138" cy="94" r="3"/></g></svg></div><span class="hw-tag">Mobile platform</span><h3>Wheeled rover</h3><p>A simple platform that patrols the edge of the quay.</p></li><li class="hw-card"><div class="hw-pic"><svg viewBox="0 0 220 130" role="img" aria-label="Small walking robot" xmlns="http://www.w3.org/2000/svg"><line x1="14" y1="108" x2="206" y2="108" stroke="var(--hero-ink)" stroke-opacity=".45" stroke-width="1.6"/><g transform="translate(100 108) scale(1.05)" fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><polyline fill="none" points="8.0,-29.0 13.5,-14.5 8.0,0.0"/><polyline fill="none" points="-7.0,-29.0 -1.5,-14.5 -7.0,0.0"/><line x1="2.0" y1="-1.3" x2="20.0" y2="-1.3"/><line x1="-13.0" y1="-1.3" x2="5.0" y2="-1.3"/><rect x="-20" y="-56" width="40" height="27" rx="10"/><line x1="6" y1="-56" x2="11" y2="-70"/><rect x="-14" y="-92" width="60" height="22" rx="10"/><circle cx="32" cy="-81" r="5" fill="none" stroke="var(--hero-accent)"/><rect x="44" y="-82" width="15" height="7" rx="3" fill="var(--hero-accent)" stroke="none"/></g></svg></div><span class="hw-tag">Mobile platform</span><h3>Small walking robot</h3><p>A desktop-size biped, small enough for the model port.</p></li><li class="hw-card"><div class="hw-pic"><svg viewBox="0 0 220 130" role="img" aria-label="Model port on a table" xmlns="http://www.w3.org/2000/svg"><line x1="14" y1="108" x2="206" y2="108" stroke="var(--hero-ink)" stroke-opacity=".45" stroke-width="1.6"/><g fill="var(--hero-bg)" stroke="var(--hero-ink)" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><rect x="22" y="78" width="72" height="30"/><path d="M52 78 V44 M72 78 V44 M40 50 H112 M62 32 L40 50 M62 32 L112 50 M62 44 V32" fill="none"/><polygon points="104,88 184,88 198,98 184,108 104,108"/><rect x="112" y="76" width="22" height="12"/><rect x="140" y="80" width="14" height="8"/><rect x="156" y="80" width="14" height="8"/></g><rect x="24" y="112" width="174" height="5" rx="2" fill="var(--hero-ink)" fill-opacity=".35"/></svg></div><span class="hw-tag">Test bed</span><h3>Model port</h3><p>A small physical port with model ships, where methods from the virtual port meet real hardware.</p></li></ul>
+</div></section>
+
 <section class="band-2" id="questions"><div class="wrap stack">
 <p class="eyebrow">Research questions</p><h2>What the project asks</h2>
-<ul class="rq">
-<li><span class="k">Main question</span><p class="main">When a ship&rsquo;s own perception of its surroundings is incomplete, how can flexible perception best supply the information it is missing?</p></li>
-<li><span class="k">Sub-question 1</span><p>How should cameras on shore, movable cameras and mobile platforms cooperate with a ship&rsquo;s own sensors, so that sensing is available wherever a blind spot appears?</p></li>
-<li><span class="k">Sub-question 2</span><p>What kind of extra information helps a ship most, and where should movable sensors be placed, or moved, to provide it?</p></li>
-<li><span class="k">Sub-question 3</span><p>How can methods developed in a virtual port be transferred to real hardware in a physical model port (sim-to-real), and what has to change for them to keep working?</p></li>
-</ul>
-<p>Students will use the virtual port and a small physical model port to explore how these sources of information can cooperate, which information helps a ship most, and how methods developed in simulation transfer to real hardware.</p>
+<div class="rq-main"><span class="k">Main question</span><p>When a ship&rsquo;s own perception of its surroundings is incomplete, how can flexible perception best supply the information it is missing?</p></div>
+<ol class="rq-subs">
+<li><span class="n">1</span><h3>Cooperation</h3><p>How should cameras on shore, movable cameras and mobile platforms cooperate with a ship&rsquo;s own sensors, so that sensing is available wherever a blind spot appears?</p></li>
+<li><span class="n">2</span><h3>Information</h3><p>What kind of extra information helps a ship most, and where should movable sensors be placed, or moved, to provide it?</p></li>
+<li><span class="n">3</span><h3>Sim-to-real</h3><p>How can methods developed in a virtual port be transferred to real hardware in a physical model port, and what has to change for them to keep working?</p></li>
+</ol>
+<div class="todo"><span class="k">What students will do</span><p>Use the virtual port and a small physical model port to explore how these sources of information can cooperate, which information helps a ship most, and how methods developed in simulation transfer to real hardware.</p></div>
 </div></section>
 
 <footer><div class="wrap"><p><strong>BeyondSea</strong> &middot; Flexible Perception as Extra Eyes for Ships in Port</p><p>All footage on this page is simulation in a virtual model of the Port of Liverpool, played at twice real speed. The waterfront drawing is an illustration.</p></div></footer>
